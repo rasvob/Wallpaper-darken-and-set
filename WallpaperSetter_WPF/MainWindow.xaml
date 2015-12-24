@@ -1,0 +1,29 @@
+﻿<Window x:Class="WallpaperSetter_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WallpaperSetter_WPF"
+        mc:Ignorable="d"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        Title="Darken your wall" Height="700" Width="1000" Background="#FF616161" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen"
+        Icon="Resources/appIcon.ico"
+        >
+    <Canvas Background="#FF616161" Margin="0,0,4,0">
+        <Canvas Background="#FF424242" Width="990" Height="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Canvas.Top="571">
+            <Button x:Name="button" Content="Set as wallpaper" Canvas.Left="810" Canvas.Top="27" Width="148" RenderTransformOrigin="-0.723,0.75" Click="button_Click" Height="40"/>
+            <Slider x:Name="slider" Canvas.Left="29" Canvas.Top="34" Width="747" Height="40" Maximum="100" SmallChange="10" TickPlacement="BottomRight" LargeChange="10" TickFrequency="10" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" PreviewMouseUp="slider_PreviewMouseUp"/>
+
+        </Canvas>
+        <Image x:Name="image" Height="490" Canvas.Left="10" Canvas.Top="65" Width="960" Stretch="UniformToFill" Source="Resources/placeholder.png"/>
+        <Menu x:Name="menu" Height="48" Width="990" Background="#FF424242" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+            <MenuItem Header="Open file" Click="MenuItem_Click"/>
+            <MenuItem Header="Style">
+                <RadioButton Content="Tiled" IsChecked="True" Checked="RadioButton1_Checked"/>
+                <RadioButton Content="Centered" Checked="RadioButton2_Checked"/>
+                <RadioButton Content="Stretched" Checked="RadioButton3_Checked"/>
+            </MenuItem>
+        </Menu>
+    </Canvas>
+</Window>
