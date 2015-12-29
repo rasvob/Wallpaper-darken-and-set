@@ -19,6 +19,7 @@
         <Image x:Name="image" Height="490" Canvas.Left="10" Canvas.Top="65" Width="960" Stretch="UniformToFill" Source="Resources/placeholder.png"/>
         <Menu x:Name="menu" Height="48" Width="990" Background="#FF424242" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
             <MenuItem Header="Open file" Click="MenuItem_Click"/>
+            <MenuItem x:Name="menuItemWallhaven" Header="Open wallhaven link" Click="menuItemWallhaven_Click"/>
             <MenuItem Header="Style">
                 <RadioButton Content="Tiled" IsChecked="True" Checked="RadioButton1_Checked"/>
                 <RadioButton Content="Centered" Checked="RadioButton2_Checked"/>

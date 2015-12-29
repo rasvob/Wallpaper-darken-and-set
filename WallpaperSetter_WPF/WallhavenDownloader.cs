@@ -16,5 +16,10 @@ namespace WallpaperSetter_WPF
 		{
 			this.WallhavenLink = WallhavenLink;
 		}
+
+		public String DownloadImage()
+		{
+			return null;
+		}
 	}
 }
