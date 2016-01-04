@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.3.41352, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>..\packages\AngleSharp.0.9.3\lib\net45\AngleSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ImageProcessor, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ImageProcessor.2.3.1.0\lib\net45\ImageProcessor.dll</HintPath>
       <Private>True</Private>
@@ -69,7 +73,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="IWallHavenLinkInput.cs" />
     <Compile Include="PreviewCreator.cs" />
     <Compile Include="WallhavenDialog.xaml.cs">
       <DependentUpon>WallhavenDialog.xaml</DependentUpon>

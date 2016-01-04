@@ -12,18 +12,18 @@ using System.Windows.Media.Imaging;
 
 namespace WallpaperSetter_WPF
 {
-	
-
 	class PreviewCreator
 	{
 		public string PathToImage { get; set; }
 		public int Width { get; set; }
 		public int Height { get; set; }
 		private MemoryStream prevStream;
+		public MemoryStream OutputStream { get; set; }
 
 		public PreviewCreator()
 		{
 			prevStream = new MemoryStream();
+
 		}
 
 		public PreviewCreator(string pathToImage, int width, int height)
@@ -50,6 +50,19 @@ namespace WallpaperSetter_WPF
 			}
 		}
 
+		public void DarkenPreviewNoRes(int amount)
+		{
+			ISupportedImageFormat format = new PngFormat { Quality = 70 };
+				using(ImageFactory factory = new ImageFactory(preserveExifData: true))
+				{
+					Bitmap cover = CreateBlackOverlay(Width, Height);
+					ImageLayer imgLayer = new ImageLayer();
+					imgLayer.Image = cover;
+					imgLayer.Opacity = amount;
+					imgLayer.Size = new Size(Width, Height);
+					factory.Load(prevStream.GetBuffer()).Overlay(imgLayer).Save(OutputStream);
+				}
+		}
 
 		public BitmapImage DarkenPreview(int amount)
 		{
@@ -78,8 +91,7 @@ namespace WallpaperSetter_WPF
 			}
 		}
 
-
-		private BitmapImage MemoryStreamToBitmapImage(MemoryStream memory)
+		public BitmapImage MemoryStreamToBitmapImage(MemoryStream memory)
 		{
 			memory.Position = 0;
 

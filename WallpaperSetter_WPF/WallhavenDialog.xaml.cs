@@ -24,7 +24,6 @@ namespace WallpaperSetter_WPF
 
 	public partial class WallhavenDialog : Window
 	{
-		public IWallHavenLinkInput LinkCallback { get; set; }
 		public CallbackLink LinkCallbackDelegate { get; set; }
 		public WallhavenDialog()
 		{
@@ -41,7 +40,6 @@ namespace WallpaperSetter_WPF
 
 		private void passLink()
 		{
-			//LinkCallback.CallbackLink(textBoxLink.Text);
 			LinkCallbackDelegate(textBoxLink.Text);
 		}
 

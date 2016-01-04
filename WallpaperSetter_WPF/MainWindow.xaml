@@ -26,5 +26,6 @@
                 <RadioButton Content="Stretched" Checked="RadioButton3_Checked"/>
             </MenuItem>
         </Menu>
+        <ProgressBar x:Name="DownloadProgressBar" Height="7" Canvas.Left="114" Canvas.Top="378" Width="747" SmallChange="1" Visibility="Hidden"/>
     </Canvas>
 </Window>

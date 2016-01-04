@@ -16,35 +16,50 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WalllpaperSetter_WPF;
 using System.Diagnostics;
+using System.Windows.Forms;
+using System.Threading;
 
 namespace WallpaperSetter_WPF
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window, IWallHavenLinkInput
+	public partial class MainWindow : Window
 	{
-		private string pathToOpenedImg;
-		private PreviewCreator previewCreator;
-		private WallhavenDownloader wallhavenDownloader;
-		private WallSetter.Style styleOfWall;
+		private string _pathToOpenedImg;
+		private PreviewCreator _previewCreator;
+		private WallhavenDownloader _wallhavenDownloader;
+		private WallSetter.Style _styleOfWall;
 		private int opacity;
+		private MemoryStream _previewStream;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			opacity = 0;
-			styleOfWall = WallSetter.Style.Tiled;
-			previewCreator = new PreviewCreator();
-			wallhavenDownloader = new WallhavenDownloader();
+			_styleOfWall = WallSetter.Style.Tiled;
+			_previewCreator = new PreviewCreator();
+			_wallhavenDownloader = new WallhavenDownloader();
+			_previewStream = new MemoryStream();
+
+			_wallhavenDownloader.CallbackDownloadComplete = (filename) => {
+				UpdateInfoAboutOpenedImage(filename);
+			};
+
+			_previewCreator.OutputStream = _previewStream;
+		}
+
+		private void testCallback(BitmapImage bi)
+		{
+			image.Source = null;
 		}
 
 		private async void button_Click(object sender, RoutedEventArgs e)
 		{
 			await Task.Run(() =>
 			 {
-				 WallSetter setter = new WallSetter(pathToOpenedImg);
-				 setter.StyleOfWallpaper = styleOfWall;
+				 WallSetter setter = new WallSetter(_pathToOpenedImg);
+				 setter.StyleOfWallpaper = _styleOfWall;
 				 setter.SetDesktopWallpaper(opacity);
 			 });
 			
@@ -60,10 +75,7 @@ namespace WallpaperSetter_WPF
 				case System.Windows.Forms.DialogResult.None:
 					break;
 				case System.Windows.Forms.DialogResult.OK:
-					FileInfo fi = new FileInfo(fileDialog.FileName);
-					pathToOpenedImg = fi.FullName;
-					setupPreviewCreator();
-					image.Source = previewCreator.CreatePreview();
+					UpdateInfoAboutOpenedImage(fileDialog.FileName);
 					break;
 				case System.Windows.Forms.DialogResult.Cancel:
 					break;
@@ -82,23 +94,31 @@ namespace WallpaperSetter_WPF
 			}
 		}
 
+		private void UpdateInfoAboutOpenedImage(string filename)
+		{
+			FileInfo fi = new FileInfo(filename);
+			_pathToOpenedImg = fi.FullName;
+			setupPreviewCreator();
+			image.Source = _previewCreator.CreatePreview();
+		}
 
 		private void darkenImage()
 		{
-			if(previewCreator.IsReady())
+			if(_previewCreator.IsReady())
 			{
-				previewCreator.Width = (int)image.ActualWidth;
-				previewCreator.Height = (int)image.ActualHeight;
+				_previewCreator.Width = (int)image.ActualWidth;
+				_previewCreator.Height = (int)image.ActualHeight;
 				opacity = (int)slider.Value;
-				image.Source = previewCreator.DarkenPreview(opacity);
+				Task.Factory.StartNew(() => _previewCreator.DarkenPreviewNoRes(opacity)).ContinueWith(t => image.Source = _previewCreator.MemoryStreamToBitmapImage(_previewStream), TaskScheduler.FromCurrentSynchronizationContext());
+				//image.Source = _previewCreator.DarkenPreview(opacity);
 			}
 		}
 
 		private void setupPreviewCreator()
 		{
-			previewCreator.PathToImage = pathToOpenedImg;
-			previewCreator.Width = (int)image.ActualWidth;
-			previewCreator.Height = (int)image.ActualHeight;
+			_previewCreator.PathToImage = _pathToOpenedImg;
+			_previewCreator.Width = (int)image.ActualWidth;
+			_previewCreator.Height = (int)image.ActualHeight;
 			slider.Value = slider.Minimum;
 		}
 
@@ -110,31 +130,29 @@ namespace WallpaperSetter_WPF
 		private void RadioButton1_Checked(object sender, RoutedEventArgs e)
 		{
 
-			styleOfWall = WallSetter.Style.Tiled;
+			_styleOfWall = WallSetter.Style.Tiled;
 		}
 
 		private void RadioButton2_Checked(object sender, RoutedEventArgs e)
 		{
-			styleOfWall = WallSetter.Style.Centered;
+			_styleOfWall = WallSetter.Style.Centered;
 		}
 
 		private void RadioButton3_Checked(object sender, RoutedEventArgs e)
 		{
-			styleOfWall = WallSetter.Style.Stretched;
+			_styleOfWall = WallSetter.Style.Stretched;
 		}
 
 		private void menuItemWallhaven_Click(object sender, RoutedEventArgs e)
 		{
-			Trace.WriteLine("Menu item wallhaven clicked");
 			WallhavenDialog dialog = new WallhavenDialog();
-			dialog.LinkCallback = this;
+			dialog.LinkCallbackDelegate = (t) =>
+			{
+				Trace.WriteLine(t);
+				_wallhavenDownloader.WallhavenLink = t;
+				_wallhavenDownloader.DownloadImageFromWallhaven();
+			};
 			dialog.ShowDialog();
-		}
-
-		public void CallbackLink(string link)
-		{
-			Trace.WriteLine(link);
-			wallhavenDownloader.WallhavenLink = link;
 		}
 	}
 }
