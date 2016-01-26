@@ -9,7 +9,7 @@ Open downloaded wallpaper (or download wallapper from Wallhaven.cc right in the 
 
 ## Screenshot
 ### Original
-![alt tag](https://cloud.githubusercontent.com/assets/10211002/12583768/94060cc8-c444-11e5-813d-75eb9d7c9d16.png)
+![alt tag](https://cloud.githubusercontent.com/assets/10211002/12583942/6fc35914-c445-11e5-80bc-370224a00967.png)
 
 ### Darkened
-![alt tag](https://cloud.githubusercontent.com/assets/10211002/12583763/916d893c-c444-11e5-88dd-fe555fc7a8c0.png)
+![alt tag](https://cloud.githubusercontent.com/assets/10211002/12583941/6fbe6bde-c445-11e5-9e44-bafb2f8d645c.png)
