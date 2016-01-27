@@ -3,7 +3,7 @@
 Simple C# app able to reduce wallpaper brightness without image glitches
 
 ## Download
-[Download](http://bit.ly/darken-your-wall)
+### [Download](http://bit.ly/darken-your-wall)
 
 ## Usage
 
