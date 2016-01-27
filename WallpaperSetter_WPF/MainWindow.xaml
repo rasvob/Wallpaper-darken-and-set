@@ -8,7 +8,7 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         Title="Darken your wall" Height="700" Width="1000" Background="#FF616161" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen"
-        Icon="Resources/appIcon.ico"
+        Icon="Resources/appIcon.ico" Closing="Window_Closing"
         >
     <Canvas Background="#FF616161" Margin="0,0,4,0">
         <Canvas Background="#FF424242" Width="990" Height="100" HorizontalAlignment="Center" VerticalAlignment="Bottom" Canvas.Top="571">
@@ -20,6 +20,7 @@
         <Menu x:Name="menu" Height="48" Width="990" Background="#FF424242" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
             <MenuItem Header="Open file" Click="MenuItem_Click"/>
             <MenuItem x:Name="menuItemWallhaven" Header="Open wallhaven link" Click="menuItemWallhaven_Click"/>
+			<MenuItem x:Name="menuItemImgLink" Header="Download from link" Click="menuItemImgLink_Click"/>
             <MenuItem Header="Style">
                 <RadioButton Content="Tiled" IsChecked="True" Checked="RadioButton1_Checked"/>
                 <RadioButton Content="Centered" Checked="RadioButton2_Checked"/>

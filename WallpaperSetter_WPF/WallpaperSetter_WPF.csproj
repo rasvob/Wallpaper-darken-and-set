@@ -73,12 +73,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\ProgressDialog.xaml.cs">
+      <DependentUpon>ProgressDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LinkDownloadDialog.xaml.cs">
+      <DependentUpon>LinkDownloadDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PreviewCreator.cs" />
     <Compile Include="WallhavenDialog.xaml.cs">
       <DependentUpon>WallhavenDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="WallhavenDownloader.cs" />
+    <Compile Include="WallpaperDownloader.cs" />
     <Compile Include="WallSetter.cs" />
+    <Page Include="Dialogs\ProgressDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LinkDownloadDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

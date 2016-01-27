@@ -18,6 +18,7 @@ using WalllpaperSetter_WPF;
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.Threading;
+using WallpaperSetter_WPF.Dialogs;
 
 namespace WallpaperSetter_WPF
 {
@@ -30,8 +31,10 @@ namespace WallpaperSetter_WPF
 		private PreviewCreator _previewCreator;
 		private WallhavenDownloader _wallhavenDownloader;
 		private WallSetter.Style _styleOfWall;
+		private WallpaperDownloader _wallpaperDownloader;
 		private int opacity;
 		private MemoryStream _previewStream;
+		private ProgressDialog _progressDialog;
 
 		public MainWindow()
 		{
@@ -41,9 +44,32 @@ namespace WallpaperSetter_WPF
 			_previewCreator = new PreviewCreator();
 			_wallhavenDownloader = new WallhavenDownloader();
 			_previewStream = new MemoryStream();
+			_wallpaperDownloader = new WallpaperDownloader();
+			_progressDialog = new ProgressDialog();
 
 			_wallhavenDownloader.CallbackDownloadComplete = (filename) => {
 				UpdateInfoAboutOpenedImage(filename);
+				try
+				{
+					_progressDialog.Visibility = Visibility.Collapsed;
+				}
+				catch(Exception)
+				{
+
+				}
+			};
+
+			_wallpaperDownloader.ImageDownloaded += (snd, fname) =>
+			{
+				UpdateInfoAboutOpenedImage(fname);
+				try
+				{
+					_progressDialog.Visibility = Visibility.Collapsed;
+				}
+				catch(Exception)
+				{
+
+				}
 			};
 
 			_previewCreator.OutputStream = _previewStream;
@@ -56,12 +82,13 @@ namespace WallpaperSetter_WPF
 
 		private async void button_Click(object sender, RoutedEventArgs e)
 		{
+			_progressDialog.Show();
 			await Task.Run(() =>
 			 {
 				 WallSetter setter = new WallSetter(_pathToOpenedImg);
 				 setter.StyleOfWallpaper = _styleOfWall;
 				 setter.SetDesktopWallpaper(opacity);
-			 });
+			 }).ContinueWith((t) => _progressDialog.Visibility = Visibility.Collapsed, TaskScheduler.FromCurrentSynchronizationContext());
 			
 		}
 
@@ -129,7 +156,6 @@ namespace WallpaperSetter_WPF
 		
 		private void RadioButton1_Checked(object sender, RoutedEventArgs e)
 		{
-
 			_styleOfWall = WallSetter.Style.Tiled;
 		}
 
@@ -150,9 +176,49 @@ namespace WallpaperSetter_WPF
 			{
 				Trace.WriteLine(t);
 				_wallhavenDownloader.WallhavenLink = t;
+				_progressDialog.Visibility = Visibility.Visible;
 				_wallhavenDownloader.DownloadImageFromWallhaven();
 			};
-			dialog.ShowDialog();
+			try
+			{
+				dialog.ShowDialog();
+			}
+			catch(Exception)
+			{
+
+			}
+		}
+
+		private void menuItemImgLink_Click(object sender, RoutedEventArgs e)
+		{
+			LinkDownloadDialog dialog = new LinkDownloadDialog();
+			dialog.LinkSet += (snd, args) =>
+			{
+				Trace.WriteLine(args);
+				_wallpaperDownloader.Link = args;
+				_progressDialog.Visibility = Visibility.Visible;
+				_wallpaperDownloader.DownloadImage();
+			};
+			try
+			{
+				dialog.ShowDialog();
+			}
+			catch(Exception)
+			{
+
+			}
+		}
+
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			try
+			{
+				_progressDialog.Close();
+			}
+			catch(Exception)
+			{
+
+			}
 		}
 	}
 }
