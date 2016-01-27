@@ -2,6 +2,9 @@
 
 Simple C# app able to reduce wallpaper brightness without image glitches
 
+## Download
+[Download](http://bit.ly/darken-your-wall)
+
 ## Usage
 
 Open downloaded wallpaper (or download wallapper from Wallhaven.cc right in the application), reduce brightness to desired level and set image as your wallpaper
