@@ -26,7 +26,8 @@
                 <RadioButton Content="Centered" Checked="RadioButton2_Checked"/>
                 <RadioButton Content="Stretched" Checked="RadioButton3_Checked"/>
             </MenuItem>
-        </Menu>
+			<MenuItem x:Name="menuItemReset" Header="Reset wallpaper" Click="MenuItemReset_OnClick" />
+		</Menu>
         <ProgressBar x:Name="DownloadProgressBar" Height="7" Canvas.Left="114" Canvas.Top="378" Width="747" SmallChange="1" Visibility="Hidden"/>
     </Canvas>
 </Window>

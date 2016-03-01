@@ -28,6 +28,7 @@ namespace WallpaperSetter_WPF
 	public partial class MainWindow : Window
 	{
 		private string _pathToOpenedImg;
+		private string _pathToOriginalWall;
 		private PreviewCreator _previewCreator;
 		private WallhavenDownloader _wallhavenDownloader;
 		private WallSetter.Style _styleOfWall;
@@ -35,6 +36,7 @@ namespace WallpaperSetter_WPF
 		private int opacity;
 		private MemoryStream _previewStream;
 		private ProgressDialog _progressDialog;
+		private OriginalWallpaperGetter _originalWallpaperGetter;
 
 		public MainWindow()
 		{
@@ -46,6 +48,7 @@ namespace WallpaperSetter_WPF
 			_previewStream = new MemoryStream();
 			_wallpaperDownloader = new WallpaperDownloader();
 			_progressDialog = new ProgressDialog();
+			_originalWallpaperGetter = new OriginalWallpaperGetter();
 
 			_wallhavenDownloader.CallbackDownloadComplete = (filename) => {
 				UpdateInfoAboutOpenedImage(filename);
@@ -73,6 +76,8 @@ namespace WallpaperSetter_WPF
 			};
 
 			_previewCreator.OutputStream = _previewStream;
+
+			_pathToOriginalWall = _originalWallpaperGetter.GetOriginalWallpaper();
 		}
 
 		private void testCallback(BitmapImage bi)
@@ -219,6 +224,17 @@ namespace WallpaperSetter_WPF
 			{
 
 			}
+		}
+
+		private async void MenuItemReset_OnClick(object sender, RoutedEventArgs e)
+		{
+			_progressDialog.Show();
+			await Task.Run(() =>
+			{
+				WallSetter setter = new WallSetter(_pathToOriginalWall);
+				setter.StyleOfWallpaper = _styleOfWall;
+				setter.SetOriginalWallpaper();
+			}).ContinueWith((t) => _progressDialog.Visibility = Visibility.Collapsed, TaskScheduler.FromCurrentSynchronizationContext());
 		}
 	}
 }

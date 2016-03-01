@@ -111,6 +111,7 @@
     <Compile Include="LinkDownloadDialog.xaml.cs">
       <DependentUpon>LinkDownloadDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="OriginalWallpaperGetter.cs" />
     <Compile Include="PreviewCreator.cs" />
     <Compile Include="WallhavenDialog.xaml.cs">
       <DependentUpon>WallhavenDialog.xaml</DependentUpon>

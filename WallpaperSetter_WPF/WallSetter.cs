@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -52,6 +53,32 @@ namespace WalllpaperSetter_WPF
             }
             return false;
         }
+
+	    public void SetOriginalWallpaper()
+	    {
+			RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
+			if(StyleOfWallpaper == Style.Stretched)
+			{
+				key.SetValue(@"WallpaperStyle", 2.ToString());
+				key.SetValue(@"TileWallpaper", 0.ToString());
+			}
+
+			if(StyleOfWallpaper == Style.Centered)
+			{
+				key.SetValue(@"WallpaperStyle", 1.ToString());
+				key.SetValue(@"TileWallpaper", 0.ToString());
+			}
+
+			if(StyleOfWallpaper == Style.Tiled)
+			{
+				key.SetValue(@"WallpaperStyle", 1.ToString());
+				key.SetValue(@"TileWallpaper", 1.ToString());
+			}
+			key.Close();
+			FileInfo fi = new FileInfo(PathToWallpaper);
+			Trace.WriteLine("Orig wall path " + fi.FullName);
+			SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, fi.FullName, SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
+		}
 		
 		private void SetDesktopWallpaperFromProcessed()
 		{
