@@ -78,6 +78,10 @@ namespace WallpaperSetter_WPF
 			_previewCreator.OutputStream = _previewStream;
 
 			_pathToOriginalWall = _originalWallpaperGetter.GetOriginalWallpaper();
+			if (_pathToOriginalWall.Equals(string.Empty))
+			{
+				menuItemReset.IsEnabled = false;
+			}
 		}
 
 		private void testCallback(BitmapImage bi)
