@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
-using System.Runtime.InteropServices;
-using ImageProcessor.Imaging.Formats;
-using ImageProcessor;
 using System.Drawing;
+using System.IO;
+using System.Runtime.InteropServices;
+using ImageProcessor;
 using ImageProcessor.Imaging;
-using System.Windows.Media.Imaging;
+using ImageProcessor.Imaging.Formats;
+using Microsoft.Win32;
 
-namespace WalllpaperSetter_WPF
+namespace WallpaperSetter_WPF
 {
     class WallSetter
     {
@@ -104,8 +99,6 @@ namespace WalllpaperSetter_WPF
 
 			FileInfo fi = new FileInfo(PROCESSED_IMAGE_NAME);
 			SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, fi.FullName, SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
-
-			Console.WriteLine("Path to the new wallpaper is {0}", fi.FullName);
 		}
 
 		public string RetrieveCurrentWallPath()
@@ -130,7 +123,6 @@ namespace WalllpaperSetter_WPF
 				width = temp.Width;
 				height = temp.Height;
 			}
-			Console.WriteLine("Dimensions of the image WxH are {0}x{1}", width, height);
 
 			byte[] photoBytes = File.ReadAllBytes(PathToWallpaper);
 			ISupportedImageFormat format = new PngFormat { Quality=100 };
@@ -138,15 +130,15 @@ namespace WalllpaperSetter_WPF
 			{
 				using(MemoryStream outStream = new MemoryStream())
 				{
-					processImage(inStream, format, width, height, opacity, outStream);
-					saveFile(PROCESSED_IMAGE_NAME, outStream);
+					ProcessImage(inStream, format, width, height, opacity, outStream);
+					SaveFile(PROCESSED_IMAGE_NAME, outStream);
 				}
 			}
 
 			SetDesktopWallpaperFromProcessed();
 		}
 
-		private Bitmap createBlackOverlay(int width, int height)
+		private Bitmap CreateBlackOverlay(int width, int height)
 		{
 			Bitmap res = new Bitmap(width, height);
 			for(int i = 0; i < res.Width; i++)
@@ -159,7 +151,7 @@ namespace WalllpaperSetter_WPF
 			return res;
 		}
 
-		private void saveFile(string path, MemoryStream outStream)
+		private void SaveFile(string path, MemoryStream outStream)
 		{
 			using(FileStream fileStream = File.Create(path))
 			{
@@ -168,9 +160,9 @@ namespace WalllpaperSetter_WPF
 			}
 		}
 
-		private void processImage(MemoryStream inStream, ISupportedImageFormat format, int width, int height, int percent, MemoryStream outStream)
+		private void ProcessImage(MemoryStream inStream, ISupportedImageFormat format, int width, int height, int percent, MemoryStream outStream)
 		{
-			Bitmap cover = createBlackOverlay(width, height);
+			Bitmap cover = CreateBlackOverlay(width, height);
 			ImageLayer imgLayer = new ImageLayer();
 			imgLayer.Image = cover;
 			imgLayer.Opacity = percent;

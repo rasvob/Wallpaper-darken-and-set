@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallpaperSetter_WPF", "WallpaperSetter_WPF\WallpaperSetter_WPF.csproj", "{9894CD8B-6681-4277-9121-D4A38392980F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallpaperManipulator", "WallpaperManipulator\WallpaperManipulator.csproj", "{F72AF0D1-07F6-413B-BBBA-20AE9584782B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallSetter_v2", "WallSetter_v2\WallSetter_v2.csproj", "{DCDC9F0B-CAC3-4B18-84BB-2CEC0FBA5349}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{9894CD8B-6681-4277-9121-D4A38392980F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9894CD8B-6681-4277-9121-D4A38392980F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9894CD8B-6681-4277-9121-D4A38392980F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F72AF0D1-07F6-413B-BBBA-20AE9584782B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F72AF0D1-07F6-413B-BBBA-20AE9584782B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F72AF0D1-07F6-413B-BBBA-20AE9584782B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F72AF0D1-07F6-413B-BBBA-20AE9584782B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCDC9F0B-CAC3-4B18-84BB-2CEC0FBA5349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCDC9F0B-CAC3-4B18-84BB-2CEC0FBA5349}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCDC9F0B-CAC3-4B18-84BB-2CEC0FBA5349}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCDC9F0B-CAC3-4B18-84BB-2CEC0FBA5349}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

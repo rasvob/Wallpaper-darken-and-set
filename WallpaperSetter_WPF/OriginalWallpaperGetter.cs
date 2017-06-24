@@ -2,8 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
-using System.Windows;
 
 namespace WallpaperSetter_WPF
 {

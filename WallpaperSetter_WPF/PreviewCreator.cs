@@ -23,7 +23,6 @@ namespace WallpaperSetter_WPF
 		public PreviewCreator()
 		{
 			prevStream = new MemoryStream();
-
 		}
 
 		public PreviewCreator(string pathToImage, int width, int height)
