@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WallSetter_v2"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewModels="clr-namespace:WallSetter_v2.ViewModels"
+        xmlns:valueConverters="clr-namespace:WallSetter_v2.ValueConverters"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -22,6 +23,8 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <valueConverters:OpacityValueConverter x:Key="OpacityValueConverter" ></valueConverters:OpacityValueConverter>
+
         </ResourceDictionary>
     </Window.Resources>
 
@@ -67,7 +70,7 @@
                                   ItemsSource="{Binding WidthItemSource, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         >
                             <ComboBox.Text>
-                                <Binding Path="Width" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding Path="Width" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
                                 </Binding>
                             </ComboBox.Text>
                             <ComboBox.ItemsPanel>
@@ -88,7 +91,7 @@
                                   ItemsSource="{Binding HeightItemSource, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                         >
                             <ComboBox.Text>
-                                <Binding Path="Height" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                <Binding Path="Height" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" ValidatesOnDataErrors="True">
                                 </Binding>
                             </ComboBox.Text>
                             <ComboBox.ItemsPanel>
@@ -102,15 +105,19 @@
                     <!--Opacity-->
                     <TextBlock Text="Dark cover opacity" FontSize="18" FontWeight="Regular" Margin="0 30 0 0"></TextBlock>
                     <StackPanel>
-                        <ComboBox materialDesign:HintAssist.Hint="Darken by" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding OpacityItemSource}">
-                            
+                        <ComboBox materialDesign:HintAssist.Hint="Darken by" 
+                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
+                                  ItemsSource="{Binding OpacityItemSource}"
+                                  >
+                            <ComboBox.Text>
+                                <Binding Path="Opacity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource OpacityValueConverter}"></Binding>
+                            </ComboBox.Text>
                         </ComboBox>
-
                     </StackPanel>
 
                     <!--Preview-->
                     <!--With spinner-->
-                    <TextBlock Text="Preview" FontSize="18" FontWeight="Regular" Margin="0 20 0 0"></TextBlock>
+                    <!--<TextBlock Text="Preview" FontSize="18" FontWeight="Regular" Margin="0 20 0 0"></TextBlock>
 
                     <Canvas Height="100" Margin="0,5,0,0">
                         <Image></Image>
@@ -121,7 +128,7 @@
                                          IsIndeterminate="True"                         
                             />
                         </materialDesign:Card>
-                    </Canvas>
+                    </Canvas>-->
                 </StackPanel>
 
                 <!--SetWall-->
@@ -133,7 +140,7 @@
             <Grid Grid.Column="1">
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                     <Canvas Width="{Binding ActualWidth, ElementName=image}" Height="{Binding ActualHeight, ElementName=image}">
-                        <Thumb Width="200" Height="200" Background="Black" Opacity="0.5" />
+                        <Thumb Width="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Background="Black" Opacity="{Binding Opacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                         
                         <Canvas.Background>
                             <VisualBrush  >

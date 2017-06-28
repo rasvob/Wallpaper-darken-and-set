@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +12,7 @@ using WallSetter_v2.Models;
 
 namespace WallSetter_v2.ViewModels
 {
-    public class MainWindowViewModel: INotifyPropertyChanged
+    public class MainWindowViewModel: INotifyPropertyChanged, IDataErrorInfo
     {
         public WallpaperModel WallpaperModel { get; set; } = new WallpaperModel();
 
@@ -47,7 +49,7 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
-        public string Opacity
+        public double Opacity
         {
             get => _opacity;
             set
@@ -55,7 +57,6 @@ namespace WallSetter_v2.ViewModels
                 if (value == _opacity) return;
                 _opacity = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(OpacityNumber));
             }
         }
 
@@ -82,15 +83,15 @@ namespace WallSetter_v2.ViewModels
         }
 
         private bool _useCustomSize;
-        private int _height;
-        private int _width;
-        private string _opacity;
+        private int _height = 768;
+        private int _width = 1280;
+        private double _opacity = 0;
         private ObservableCollection<string> _opacityItemSource = new ObservableCollection<string>();
         private ObservableCollection<int> _widthItemSource = new ObservableCollection<int>();
         private ObservableCollection<int> _heightItemSource = new ObservableCollection<int>();
 
         private readonly int[] _widthArray = { 1280, 1366, 1440, 1600, 1680, 1920, 2560, 3840, 5760, 3840, 5120 };
-        private readonly int[] _heightArray = { 768, 800, 900, 960, 1024, 1200, 1050, 1080, 1200, 1440, 1600, 1080, 2160, 2880 };
+        private readonly int[] _heightArray = { 768, 800, 900, 960, 1024, 1200, 1050, 1080, 1440, 1600, 2160, 2880 };
         public ICommand SetWallpaperCommand { get; private set; }
         public ICommand LoadFromFile { get; private set; }
 
@@ -101,11 +102,16 @@ namespace WallSetter_v2.ViewModels
             {
                 if (value == _useCustomSize) return;
                 _useCustomSize = value;
+
+                if (!UseCustomSize)
+                {
+                    Width = WallpaperModel.Width;
+                    Height = WallpaperModel.Height;
+                }
+
                 OnPropertyChanged();
             }
         }
-
-        public int OpacityNumber => int.Parse(Opacity.Substring(0, Opacity.Length - 1));
 
         public MainWindowViewModel()
         {
@@ -113,6 +119,14 @@ namespace WallSetter_v2.ViewModels
             FillOpacityItemSource();
             RefreshWidthSource(1920);
             RefreshHeightSource(1080);
+            WallpaperModel.SizeChanged += (sender, args) =>
+            {
+                if (!UseCustomSize)
+                {
+                    Height = WallpaperModel.Height;
+                    Width = WallpaperModel.Width;
+                }
+            };
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -152,5 +166,23 @@ namespace WallSetter_v2.ViewModels
                 HeightItemSource.Add(item);
             }
         }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                switch (columnName)
+                {
+                    case nameof(Width):
+                        return $"{nameof(Width)} must be between 0 and {WallpaperModel.Width}";
+
+                    case nameof(Height):
+                        return $"{nameof(Height)} must be between 0 and {WallpaperModel.Height}";
+                }
+                return string.Empty;
+            }
+        }
+
+        public string Error => string.Empty;
     }
 }
