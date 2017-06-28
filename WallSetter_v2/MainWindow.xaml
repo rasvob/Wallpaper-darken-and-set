@@ -5,14 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WallSetter_v2"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:viewModels="clr-namespace:WallSetter_v2.ViewModels"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
-        Title="WallSetter" Height="800" Width="1100">
-    
+        Icon="Resources/appIcon.ico"
+        d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
+        Title="Wallpaper setter" Height="800" Width="1100">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,67 +23,164 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        
     </Window.Resources>
-    
+
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        
-        <Menu Grid.Row="0">
-            <MenuItem Header="Set original wallpaper"></MenuItem>
-        </Menu>
-        
-        <Grid Grid.Row="1">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300px"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            
-            <StackPanel Grid.Column="0" Margin="15">
-                <!--Size-->
-                <TextBlock Text="Wallpaper size" FontSize="18" FontWeight="Regular"></TextBlock>
-                <!--Predefined-->
-                <!--Custom-->
-                <StackPanel Orientation="Horizontal" Margin="0 5 0 5">
-                    <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                                  ToolTip="Use custom size"/>
-                    <TextBlock Text="Use custom size" FontWeight="Light" Margin="10 0 0 0"></TextBlock>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
+                
+                <StackPanel Margin="15" Grid.Row="0">
+                    <!--Size-->
+                    <TextBlock Text="Wallpaper size" FontSize="18" FontWeight="Regular"></TextBlock>
+                    <!--Custom-->
+                    <StackPanel Orientation="Horizontal" Margin="0 5 0 5">
+                        <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                      IsChecked="{Binding UseCustomSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      ToolTip="Use custom size"/>
+                        <TextBlock Text="Use custom size" FontWeight="Light" Margin="10 0 0 0"></TextBlock>
+                    </StackPanel>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox Grid.Column="0"
+                                  IsEnabled="{Binding UseCustomSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                  materialDesign:HintAssist.Hint="Width" 
+                                  MinWidth="72"
+                                  Margin="0 0 5 0"
+                                  VerticalAlignment="Bottom" 
+                                  IsEditable="True"    
+                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                  ItemsSource="{Binding WidthItemSource, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        >
+                            <ComboBox.Text>
+                                <Binding Path="Width" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                </Binding>
+                            </ComboBox.Text>
+                            <ComboBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ComboBox.ItemsPanel>
+                        </ComboBox>
+
+                        <ComboBox Grid.Column="1"
+                                  materialDesign:HintAssist.Hint="Height" 
+                                  IsEnabled="{Binding UseCustomSize, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                  MinWidth="72"
+                                  Margin="5 0 0 0"
+                                  VerticalAlignment="Bottom" 
+                                  IsEditable="True"  
+                                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                  ItemsSource="{Binding HeightItemSource, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                        >
+                            <ComboBox.Text>
+                                <Binding Path="Height" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                </Binding>
+                            </ComboBox.Text>
+                            <ComboBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ComboBox.ItemsPanel>
+                        </ComboBox>
+                    </Grid>
+
+                    <!--Opacity-->
+                    <TextBlock Text="Dark cover opacity" FontSize="18" FontWeight="Regular" Margin="0 30 0 0"></TextBlock>
+                    <StackPanel>
+                        <ComboBox materialDesign:HintAssist.Hint="Darken by" Style="{StaticResource MaterialDesignFloatingHintComboBox}" ItemsSource="{Binding OpacityItemSource}">
+                            
+                        </ComboBox>
+
+                    </StackPanel>
+
+                    <!--Preview-->
+                    <!--With spinner-->
+                    <TextBlock Text="Preview" FontSize="18" FontWeight="Regular" Margin="0 20 0 0"></TextBlock>
+
+                    <Canvas Height="100" Margin="0,5,0,0">
+                        <Image></Image>
+                        <materialDesign:Card UniformCornerRadius="14" Padding="4"
+                                             VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" Canvas.Left="111" Canvas.Top="36">
+                            <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}" 
+                                         Value="50"
+                                         IsIndeterminate="True"                         
+                            />
+                        </materialDesign:Card>
+                    </Canvas>
                 </StackPanel>
-                
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                        <ColumnDefinition Width="*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    
-                    <TextBox materialDesign:HintAssist.Hint="Width" 
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                             Grid.Column="0"
-                             Margin="0 0 10 0"
-                             />
 
-                    <TextBox materialDesign:HintAssist.Hint="Height" 
-                             Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                             Grid.Column="1"
-                             Margin="10 0 0 0"
-                             />
-                </Grid>
-                
-                
-                <!--Opacity-->
-                
-                <!--Preview-->
-                <!--With spinner-->
-                
                 <!--SetWall-->
-            </StackPanel>
+                <Button Grid.Row="2" Style="{StaticResource MaterialDesignRaisedButton}" Margin="15" Content="Set as wallpaper"
+                        ToolTip="Resource name: MaterialDesignRaisedButton">
+                </Button>
+            </Grid>
 
-            <Canvas Grid.Column="1" Background="BlueViolet">
+            <Grid Grid.Column="1">
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <Canvas Width="{Binding ActualWidth, ElementName=image}" Height="{Binding ActualHeight, ElementName=image}">
+                        <Thumb Width="200" Height="200" Background="Black" Opacity="0.5" />
+                        
+                        <Canvas.Background>
+                            <VisualBrush  >
+                                <VisualBrush.Visual>
+                                    <Image x:Name="image" Source="Resources/placeholder.png"  />
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Canvas.Background>
+                    </Canvas>
+                </ScrollViewer>
 
-            </Canvas>
+                <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}" Margin="40"
+                                         HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <StackPanel>
+                        
+                        <Button ToolTip="Load wallpaper from file"
+                                Background="CornflowerBlue"
+                                Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
+                            <materialDesign:PackIcon Kind="FileImage" />
+                        </Button>
+
+                        <Button ToolTip="Download from https://unsplash.com/"
+                                Background="{DynamicResource PrimaryHueMidBrush}"
+                                Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
+                            <materialDesign:PackIcon Kind="Camera" />
+                        </Button>
+                        
+                        <Button ToolTip="Download from https://alpha.wallhaven.cc/"
+                                Background="{DynamicResource PrimaryHueDarkBrush}"
+                                Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
+                            <materialDesign:PackIcon Kind="FileWordBox" />
+                        </Button>
+
+                        <Button ToolTip="Download from url"
+                                Background="{DynamicResource SecondaryAccentBrush}"
+                                Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
+                            <materialDesign:PackIcon Kind="Download" />
+                        </Button>
+
+                        <Button ToolTip="Set original wallpaper"
+                                Background="Coral"
+                                Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
+                            <materialDesign:PackIcon Kind="Refresh" />
+                        </Button>
+                    </StackPanel>
+                </materialDesign:PopupBox>
+            </Grid>
         </Grid>
     </Grid>
 </Window>
