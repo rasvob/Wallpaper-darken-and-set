@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Media.Imaging;
+using WallpaperDownloader;
 using WallSetter_v2.Annotations;
 
 namespace WallSetter_v2.Models
@@ -40,6 +42,8 @@ namespace WallSetter_v2.Models
             }
         }
 
+        public MemoryStream Stream { get; set; }
+
         public event EventHandler SizeChanged;
 
         protected virtual void OnSizeChanged()
@@ -67,6 +71,15 @@ namespace WallSetter_v2.Models
             BitmapImage img = new BitmapImage(new Uri(Path, UriKind.Absolute));
             Width = (int)img.Width;
             Height = (int)img.Height;
+        }
+
+        public void DownloadWallpaper(DownloaderType type, string url)
+        {
+            IWallpaperDownloader downloader = WallpaperDownloaderFactory.CreateDownloaderInstance(type, url);
+            (string path, MemoryStream stream) wallpaper = downloader.DownloadWallpaper();
+            Path = wallpaper.path;
+            Stream = wallpaper.stream;
+            RefreshSize();
         }
     }
 }

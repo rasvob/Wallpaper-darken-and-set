@@ -3,10 +3,13 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
+using WallpaperDownloader;
 using WallpaperManipulator;
 using WallSetter_v2.Annotations;
 using WallSetter_v2.Commands;
@@ -154,7 +157,6 @@ namespace WallSetter_v2.ViewModels
             {
                 if (value == _imagePath) return;
                 _imagePath = value;
-                WallpaperModel.Path = value;
                 OnPropertyChanged();
             }
         }
@@ -201,6 +203,9 @@ namespace WallSetter_v2.ViewModels
 
         public ICommand SetWallpaperCommand { get; }
         public ICommand LoadFromFileCommand { get; }
+        public ICommand DownloadFromWallhavenCommand { get; }
+        public ICommand DownloadFromUnsplashCommand { get; }
+        public ICommand DownloadFromLinkCommand { get; }
         public WallpaperModel WallpaperModel { get; set; } = new WallpaperModel();
 
         public bool UseCustomSize
@@ -230,16 +235,38 @@ namespace WallSetter_v2.ViewModels
 
             SetWallpaperCommand = new SimpleCommand(SetWallpaperExecute, SetWallpaperCanExecute);
             LoadFromFileCommand = new SimpleCommand(LoadFromFileExecute);
+            DownloadFromWallhavenCommand = new SimpleCommand(DownloadFromWallhavenExecute);
+            DownloadFromUnsplashCommand = new SimpleCommand(DownloadFromUnsplashExecute);
+            DownloadFromLinkCommand = new SimpleCommand(DownloadFromLinkExecute);
 
             FillOpacityItemSource();
-            RefreshWidthSource(1920);
-            RefreshHeightSource(1080);
-
             WallpaperModel.SizeChanged += OnWallpaperModelOnSizeChanged;
+        }
+
+        private void DownloadFromLinkExecute(object o)
+        {
+            
+        }
+
+        private void DownloadFromUnsplashExecute(object o)
+        {
+            
+        }
+
+        private void DownloadFromWallhavenExecute(object o)
+        {
+            var downloader = WallpaperDownloaderFactory.CreateDownloaderInstance(DownloaderType.Wallhaven, @"https://alpha.wallhaven.cc/wallpaper/512644");
+            (string path, MemoryStream stream) wallpaper = downloader.DownloadWallpaper();
+            ImagePath = wallpaper.path;
+            
         }
 
         private void OnWallpaperModelOnSizeChanged(object sender, EventArgs args)
         {
+            RefreshHeightSource(WallpaperModel.Height);
+            RefreshWidthSource(WallpaperModel.Width);
+            Top = Left = 0;
+
             if (!UseCustomSize)
             {
                 Height = WallpaperModel.Height;
@@ -269,6 +296,15 @@ namespace WallSetter_v2.ViewModels
             if (file != null)
             {
                 ImagePath = file;
+                WallpaperModel.Path = file;
+                MemoryStream memoryStream = new MemoryStream();
+                using (FileStream fs = File.OpenRead(file))
+                {
+                    fs.CopyTo(memoryStream);
+                    WallpaperModel.Stream = memoryStream;
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                }
+
                 MessageQueue.Enqueue($"{file} loaded", "Hide", () => { });
             }
         }

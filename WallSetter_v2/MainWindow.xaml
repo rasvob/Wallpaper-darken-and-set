@@ -147,6 +147,7 @@
                                Opacity="{Binding Opacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                Canvas.Top="{Binding Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+
                         <Canvas.Background>
                             <VisualBrush  >
                                 <VisualBrush.Visual>
@@ -154,11 +155,10 @@
                                 </VisualBrush.Visual>
                             </VisualBrush>
                         </Canvas.Background>
-                        
+
                         <Canvas.LayoutTransform>
                             <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>
                         </Canvas.LayoutTransform>
-                        
                     </Canvas>
                 </ScrollViewer>
 
@@ -180,6 +180,7 @@
                         </Button>
                         
                         <Button ToolTip="Download from https://alpha.wallhaven.cc/"
+                                Command="{Binding DownloadFromWallhavenCommand}"
                                 Background="{DynamicResource PrimaryHueDarkBrush}"
                                 Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
                             <materialDesign:PackIcon Kind="FileWordBox" />

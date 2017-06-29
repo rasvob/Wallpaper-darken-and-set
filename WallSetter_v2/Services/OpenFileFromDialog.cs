@@ -13,7 +13,10 @@ namespace WallSetter_v2.Services
             var result = fileDialog.ShowDialog();
             if (result.HasValue && result.Value)
             {
-                return fileDialog.FileName;
+                string file = fileDialog.FileName;
+                fileDialog.Reset();
+
+                return file;
             }
             return null;
         }

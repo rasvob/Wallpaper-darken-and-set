@@ -20,7 +20,6 @@ namespace WallSetter_v2
             DataContext = ViewModel;
         }
 
-        //TODO: Check constraints
         private void ThumbCover_OnDragDelta(object sender, DragDeltaEventArgs e)
         {
             double vc = e.VerticalChange;

@@ -6,6 +6,6 @@ namespace WallpaperDownloader
     {
         string Url { get; set; }
         bool IsLinkValid();
-        string DownloadWallpaper();
+        (string path, MemoryStream stream) DownloadWallpaper();
     }
 }
