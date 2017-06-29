@@ -17,6 +17,12 @@ namespace WallSetter_v2.ValueConverters
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var op = value as string;
+
+            if (op == null)
+            {
+                return 0;
+            }
+
             return double.Parse(op?.Substring(0, op.Length - 1))/100;
         }
     }

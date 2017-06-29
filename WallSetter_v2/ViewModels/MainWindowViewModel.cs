@@ -6,15 +6,40 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using MaterialDesignThemes.Wpf;
+using WallpaperManipulator;
 using WallSetter_v2.Annotations;
 using WallSetter_v2.Commands;
 using WallSetter_v2.Models;
+using WallSetter_v2.Services;
 
 namespace WallSetter_v2.ViewModels
 {
     public class MainWindowViewModel: INotifyPropertyChanged, IDataErrorInfo
     {
-        public WallpaperModel WallpaperModel { get; set; } = new WallpaperModel();
+        private readonly IOpenFileService _openFileService;
+
+        public double Top
+        {
+            get => _top;
+            set
+            {
+                if (value.Equals(_top)) return;
+                _top = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double Left
+        {
+            get => _left;
+            set
+            {
+                if (value.Equals(_left)) return;
+                _left = value;
+                OnPropertyChanged();
+            }
+        }
 
         public ObservableCollection<int> WidthItemSource
         {
@@ -82,6 +107,80 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
+        public ObservableCollection<string> WallpaperStyleItemSource
+        {
+            get => _wallpaperStyleItemSource;
+            set
+            {
+                if (Equals(value, _wallpaperStyleItemSource)) return;
+                _wallpaperStyleItemSource = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SelectedStyle
+        {
+            get => _selectedStyle;
+            set
+            {
+                if (value == _selectedStyle) return;
+                _selectedStyle = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public Style WallpaperStyle
+        {
+            get
+            {
+                switch (SelectedStyle)
+                {
+                    case "Tiled":
+                        return Style.Tiled;
+                    case "Centered":
+                        return Style.Centered;
+                    case "Stretched":
+                        return Style.Stretched;
+                    default:
+                        return Style.Stretched;
+                }
+            }
+        }
+
+        public string ImagePath
+        {
+            get => _imagePath;
+            set
+            {
+                if (value == _imagePath) return;
+                _imagePath = value;
+                WallpaperModel.Path = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double Scale
+        {
+            get => _scale;
+            set
+            {
+                if (value.Equals(_scale)) return;
+                _scale = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ISnackbarMessageQueue MessageQueue
+        {
+            get => _messageQueue;
+            set
+            {
+                if (Equals(value, _messageQueue)) return;
+                _messageQueue = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _useCustomSize;
         private int _height = 768;
         private int _width = 1280;
@@ -92,8 +191,17 @@ namespace WallSetter_v2.ViewModels
 
         private readonly int[] _widthArray = { 1280, 1366, 1440, 1600, 1680, 1920, 2560, 3840, 5760, 3840, 5120 };
         private readonly int[] _heightArray = { 768, 800, 900, 960, 1024, 1200, 1050, 1080, 1440, 1600, 2160, 2880 };
-        public ICommand SetWallpaperCommand { get; private set; }
-        public ICommand LoadFromFile { get; private set; }
+        private double _top;
+        private double _left;
+        private ObservableCollection<string> _wallpaperStyleItemSource = new ObservableCollection<string>() { "Tiled", "Centered", "Stretched" };
+        private string _selectedStyle;
+        private string _imagePath;
+        private double _scale = 1;
+        private ISnackbarMessageQueue _messageQueue;
+
+        public ICommand SetWallpaperCommand { get; }
+        public ICommand LoadFromFileCommand { get; }
+        public WallpaperModel WallpaperModel { get; set; } = new WallpaperModel();
 
         public bool UseCustomSize
         {
@@ -107,26 +215,82 @@ namespace WallSetter_v2.ViewModels
                 {
                     Width = WallpaperModel.Width;
                     Height = WallpaperModel.Height;
+                    Top = Left = 0;
                 }
 
                 OnPropertyChanged();
             }
         }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IOpenFileService openFileService)
         {
-            SetWallpaperCommand = new RelayCommand<int>(i => { Debug.WriteLine("ss"); });
+            _openFileService = openFileService;
+
+            MessageQueue = new SnackbarMessageQueue(TimeSpan.FromSeconds(2));
+
+            SetWallpaperCommand = new SimpleCommand(SetWallpaperExecute, SetWallpaperCanExecute);
+            LoadFromFileCommand = new SimpleCommand(LoadFromFileExecute);
+
             FillOpacityItemSource();
             RefreshWidthSource(1920);
             RefreshHeightSource(1080);
-            WallpaperModel.SizeChanged += (sender, args) =>
+
+            WallpaperModel.SizeChanged += OnWallpaperModelOnSizeChanged;
+        }
+
+        private void OnWallpaperModelOnSizeChanged(object sender, EventArgs args)
+        {
+            if (!UseCustomSize)
             {
-                if (!UseCustomSize)
+                Height = WallpaperModel.Height;
+                Width = WallpaperModel.Width;
+                Top = Left = 0;
+            }
+            else
+            {
+                if (Height > WallpaperModel.Height)
                 {
                     Height = WallpaperModel.Height;
-                    Width = WallpaperModel.Width;
+                    Top = 0;
                 }
-            };
+
+                if (Width > WallpaperModel.Width)
+                {
+                    Width = WallpaperModel.Width;
+                    Left = 0;
+                }
+            }
+        }
+
+        private void LoadFromFileExecute(object _)
+        {
+            var file = _openFileService.OpenFile();
+
+            if (file != null)
+            {
+                ImagePath = file;
+                MessageQueue.Enqueue($"{file} loaded", "Hide", () => { });
+            }
+        }
+
+        private void SetWallpaperExecute(object _)
+        {
+            Debug.WriteLine(WallpaperStyle);
+        }
+
+        private bool SetWallpaperCanExecute(object _)
+        {
+            if (this[nameof(Width)] != string.Empty || this[nameof(Height)] != string.Empty)
+            {
+                return false;
+            }
+
+            if (SelectedStyle == null)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -174,15 +338,35 @@ namespace WallSetter_v2.ViewModels
                 switch (columnName)
                 {
                     case nameof(Width):
-                        return $"{nameof(Width)} must be between 0 and {WallpaperModel.Width}";
-
+                        if (!WallpaperModel.ValidateWidth(Width))
+                        {
+                            return $"{nameof(Width)} must be between 0 and {WallpaperModel.Width}";
+                        }
+                        break;
                     case nameof(Height):
-                        return $"{nameof(Height)} must be between 0 and {WallpaperModel.Height}";
+                        if (!WallpaperModel.ValidateHeight(Height))
+                        {
+                            return $"{nameof(Height)} must be between 0 and {WallpaperModel.Height}";
+                        }
+                        break;
                 }
                 return string.Empty;
             }
         }
 
         public string Error => string.Empty;
+
+        public void ValidateAndSetupChange(ref double hc, ref double vc)
+        {
+            if (vc + Top < 0 || vc + Top + Height > WallpaperModel.Height)
+            {
+                vc = 0;
+            }
+
+            if (hc + Left < 0 || hc + Left + Width > WallpaperModel.Width)
+            {
+                hc = 0;
+            }
+        }
     }
 }

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallpaperManipulator", "Wal
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallSetter_v2", "WallSetter_v2\WallSetter_v2.csproj", "{DCDC9F0B-CAC3-4B18-84BB-2CEC0FBA5349}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WallpaperDownloader", "WallpaperDownloader\WallpaperDownloader.csproj", "{89578F8F-92BA-4FBB-94C8-8881E42FCFA4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DCDC9F0B-CAC3-4B18-84BB-2CEC0FBA5349}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCDC9F0B-CAC3-4B18-84BB-2CEC0FBA5349}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCDC9F0B-CAC3-4B18-84BB-2CEC0FBA5349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89578F8F-92BA-4FBB-94C8-8881E42FCFA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89578F8F-92BA-4FBB-94C8-8881E42FCFA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89578F8F-92BA-4FBB-94C8-8881E42FCFA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89578F8F-92BA-4FBB-94C8-8881E42FCFA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

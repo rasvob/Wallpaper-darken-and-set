@@ -31,5 +31,10 @@ namespace WallSetter_v2.Commands
         {
             _execute((T)parameter);
         }
+
+        public void Refresh()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }
