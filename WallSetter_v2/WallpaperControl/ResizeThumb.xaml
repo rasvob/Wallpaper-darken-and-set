@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:WallSetter_v2.WallpaperControl">
+    <ControlTemplate TargetType="{x:Type Thumb}" x:Key="ResizeThumbTemplate">
+        
+    </ControlTemplate>
+    
+</ResourceDictionary>

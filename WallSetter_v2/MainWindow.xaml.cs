@@ -44,6 +44,7 @@ namespace WallSetter_v2
                     ns = ViewModel.Scale;
                 }
                 ViewModel.Scale = ns;
+                e.Handled = true;
             }
         }
     }

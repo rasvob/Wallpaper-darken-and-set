@@ -206,7 +206,8 @@ namespace WallSetter_v2.ViewModels
         public ICommand DownloadFromWallhavenCommand { get; }
         public ICommand DownloadFromUnsplashCommand { get; }
         public ICommand DownloadFromLinkCommand { get; }
-        public WallpaperModel WallpaperModel { get; set; } = new WallpaperModel();
+
+        public WallpaperViewModel WallpaperViewModel { get; set; } = new WallpaperViewModel();
 
         public bool UseCustomSize
         {
@@ -218,8 +219,8 @@ namespace WallSetter_v2.ViewModels
 
                 if (!UseCustomSize)
                 {
-                    Width = WallpaperModel.Width;
-                    Height = WallpaperModel.Height;
+                    Width = WallpaperViewModel.WallpaperModel.Width;
+                    Height = WallpaperViewModel.WallpaperModel.Height;
                     Top = Left = 0;
                 }
 
@@ -240,7 +241,7 @@ namespace WallSetter_v2.ViewModels
             DownloadFromLinkCommand = new SimpleCommand(DownloadFromLinkExecute);
 
             FillOpacityItemSource();
-            WallpaperModel.SizeChanged += OnWallpaperModelOnSizeChanged;
+            //WallpaperViewModel.WallpaperModel.SizeChanged += OnWallpaperModelOnSizeChanged;
         }
 
         private void DownloadFromLinkExecute(object o)
@@ -263,27 +264,27 @@ namespace WallSetter_v2.ViewModels
 
         private void OnWallpaperModelOnSizeChanged(object sender, EventArgs args)
         {
-            RefreshHeightSource(WallpaperModel.Height);
-            RefreshWidthSource(WallpaperModel.Width);
+            RefreshHeightSource(WallpaperViewModel.WallpaperModel.Height);
+            RefreshWidthSource(WallpaperViewModel.WallpaperModel.Width);
             Top = Left = 0;
 
             if (!UseCustomSize)
             {
-                Height = WallpaperModel.Height;
-                Width = WallpaperModel.Width;
+                Height = WallpaperViewModel.WallpaperModel.Height;
+                Width = WallpaperViewModel.WallpaperModel.Width;
                 Top = Left = 0;
             }
             else
             {
-                if (Height > WallpaperModel.Height)
+                if (Height > WallpaperViewModel.WallpaperModel.Height)
                 {
-                    Height = WallpaperModel.Height;
+                    Height = WallpaperViewModel.WallpaperModel.Height;
                     Top = 0;
                 }
 
-                if (Width > WallpaperModel.Width)
+                if (Width > WallpaperViewModel.WallpaperModel.Width)
                 {
-                    Width = WallpaperModel.Width;
+                    Width = WallpaperViewModel.WallpaperModel.Width;
                     Left = 0;
                 }
             }
@@ -296,12 +297,12 @@ namespace WallSetter_v2.ViewModels
             if (file != null)
             {
                 ImagePath = file;
-                WallpaperModel.Path = file;
+                WallpaperViewModel.WallpaperModel.Path = file;
                 MemoryStream memoryStream = new MemoryStream();
                 using (FileStream fs = File.OpenRead(file))
                 {
                     fs.CopyTo(memoryStream);
-                    WallpaperModel.Stream = memoryStream;
+                    WallpaperViewModel.WallpaperModel.Stream = memoryStream;
                     memoryStream.Seek(0, SeekOrigin.Begin);
                 }
 
@@ -348,7 +349,8 @@ namespace WallSetter_v2.ViewModels
         public void RefreshWidthSource(int maxWidth)
         {
             WidthItemSource.Clear();
-            var items = _widthArray.Where(t => t <= maxWidth).ToList();
+            //var items = _widthArray.Where(t => t <= maxWidth).ToList();
+            var items = _widthArray.ToList();
             items.Sort();
             foreach (int item in items)
             {
@@ -359,7 +361,8 @@ namespace WallSetter_v2.ViewModels
         public void RefreshHeightSource(int maxHeight)
         {
             HeightItemSource.Clear();
-            var items = _heightArray.Where(t => t <= maxHeight).ToList();
+            //var items = _heightArray.Where(t => t <= maxHeight).ToList();
+            var items = _heightArray.ToList();
             items.Sort();
             foreach (int item in items)
             {
@@ -374,15 +377,15 @@ namespace WallSetter_v2.ViewModels
                 switch (columnName)
                 {
                     case nameof(Width):
-                        if (!WallpaperModel.ValidateWidth(Width))
+                        if (!WallpaperViewModel.WallpaperModel.ValidateWidth(Width))
                         {
-                            return $"{nameof(Width)} must be between 0 and {WallpaperModel.Width}";
+                            return $"{nameof(Width)} must be between 0 and {WallpaperViewModel.WallpaperModel.Width}";
                         }
                         break;
                     case nameof(Height):
-                        if (!WallpaperModel.ValidateHeight(Height))
+                        if (!WallpaperViewModel.WallpaperModel.ValidateHeight(Height))
                         {
-                            return $"{nameof(Height)} must be between 0 and {WallpaperModel.Height}";
+                            return $"{nameof(Height)} must be between 0 and {WallpaperViewModel.WallpaperModel.Height}";
                         }
                         break;
                 }
@@ -394,12 +397,12 @@ namespace WallSetter_v2.ViewModels
 
         public void ValidateAndSetupChange(ref double hc, ref double vc)
         {
-            if (vc + Top < 0 || vc + Top + Height > WallpaperModel.Height)
+            if (vc + Top < 0 || vc + Top + Height > WallpaperViewModel.WallpaperModel.Height)
             {
                 vc = 0;
             }
 
-            if (hc + Left < 0 || hc + Left + Width > WallpaperModel.Width)
+            if (hc + Left < 0 || hc + Left + Width > WallpaperViewModel.WallpaperModel.Width)
             {
                 hc = 0;
             }

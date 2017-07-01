@@ -24,7 +24,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <valueConverters:OpacityValueConverter x:Key="OpacityValueConverter" ></valueConverters:OpacityValueConverter>
-
+            <valueConverters:ScaleValueConverter x:Key="ScaleValueConverter"></valueConverters:ScaleValueConverter>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -139,22 +139,13 @@
                               PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel"
                               Background="{StaticResource MaterialDesignBackground}"
                               x:Name="ScrollViewer">
-                    <Canvas Width="{Binding ActualWidth, ElementName=image}" Height="{Binding ActualHeight, ElementName=image}">
+                    <Canvas Width="10000" Height="10000">
                         <Thumb Width="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                                Height="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                                Background="Black" 
-                               DragDelta="ThumbCover_OnDragDelta"
                                Opacity="{Binding Opacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                Canvas.Top="{Binding Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                        <Canvas.Background>
-                            <VisualBrush  >
-                                <VisualBrush.Visual>
-                                    <Image x:Name="image" Source="{Binding ImagePath}"  />
-                                </VisualBrush.Visual>
-                            </VisualBrush>
-                        </Canvas.Background>
 
                         <Canvas.LayoutTransform>
                             <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>

@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="WallSetter_v2.WallpaperControl.WallpaperControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WallSetter_v2.WallpaperControl"
+             xmlns:viewModels="clr-namespace:WallSetter_v2.ViewModels"
+             xmlns:valueConverters="clr-namespace:WallSetter_v2.ValueConverters"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:WallpaperViewModel}">
+    
+    <UserControl.Resources>
+        <valueConverters:ScaleValueConverter x:Key="ScaleValueConverter"></valueConverters:ScaleValueConverter>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Canvas Width="{Binding ActualWidth, ElementName=image}" Height="{Binding ActualHeight, ElementName=image}">
+            <Canvas.Background>
+                <VisualBrush  >
+                    <VisualBrush.Visual>
+                        <Image x:Name="image" Source="{Binding ImagePath}" />
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Canvas.Background>
+        </Canvas>
+
+        <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Thumb.Template>
+                <ControlTemplate>
+                    <Ellipse Width="10" Height="10" Fill="{DynamicResource PrimaryHueMidBrush}"></Ellipse>
+                </ControlTemplate>
+            </Thumb.Template>
+
+            <Thumb.LayoutTransform>
+                <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ScaleValueConverter}}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ScaleValueConverter}}"></ScaleTransform>
+            </Thumb.LayoutTransform>
+        </Thumb>
+    </Grid>
+</UserControl>

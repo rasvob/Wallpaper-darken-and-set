@@ -65,6 +65,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ValueConverters\ScaleValueConverter.cs" />
+    <Compile Include="ViewModels\WallpaperViewModel.cs" />
+    <Compile Include="WallpaperControl\WallpaperControl.xaml.cs">
+      <DependentUpon>WallpaperControl.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -79,6 +84,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="WallpaperControl\ResizeThumb.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WallpaperControl\WallpaperControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\WallpaperModel.cs" />
