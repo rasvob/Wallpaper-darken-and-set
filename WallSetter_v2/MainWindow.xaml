@@ -7,6 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:viewModels="clr-namespace:WallSetter_v2.ViewModels"
         xmlns:valueConverters="clr-namespace:WallSetter_v2.ValueConverters"
+        xmlns:wallpaperControl="clr-namespace:WallSetter_v2.WallpaperControl"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -147,6 +148,10 @@
                                Canvas.Top="{Binding Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
+                        <wallpaperControl:WallpaperControl Width="{Binding WallpaperViewModel.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding WallpaperViewModel.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="200" Canvas.Left="200">
+                            
+                        </wallpaperControl:WallpaperControl>
+                        
                         <Canvas.LayoutTransform>
                             <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>
                         </Canvas.LayoutTransform>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WallSetter_v2.Annotations;
 using WallSetter_v2.Models;
@@ -69,6 +70,16 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
+        public WallpaperViewModel()
+        {
+            WallpaperModel.SizeChanged += WallpaperModelOnSizeChanged;
+        }
+
+        private void WallpaperModelOnSizeChanged(object sender, EventArgs eventArgs)
+        {
+            Width = WallpaperModel.Width;
+            Height = WallpaperModel.Height;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

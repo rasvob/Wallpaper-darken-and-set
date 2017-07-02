@@ -296,7 +296,6 @@ namespace WallSetter_v2.ViewModels
 
             if (file != null)
             {
-                ImagePath = file;
                 WallpaperViewModel.WallpaperModel.Path = file;
                 MemoryStream memoryStream = new MemoryStream();
                 using (FileStream fs = File.OpenRead(file))

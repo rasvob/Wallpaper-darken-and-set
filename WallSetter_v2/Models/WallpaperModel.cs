@@ -1,12 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
 using WallpaperDownloader;
 using WallSetter_v2.Annotations;
 
 namespace WallSetter_v2.Models
 {
-    public class WallpaperModel
+    public class WallpaperModel: INotifyPropertyChanged
     {
         private int _width;
         private int _height;
@@ -37,7 +39,8 @@ namespace WallSetter_v2.Models
             get => _path;
             set
             {
-                _path = value; 
+                _path = value;
+                OnPropertyChanged();
                 RefreshSize();
             }
         }
@@ -80,6 +83,14 @@ namespace WallSetter_v2.Models
             Path = wallpaper.path;
             Stream = wallpaper.stream;
             RefreshSize();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

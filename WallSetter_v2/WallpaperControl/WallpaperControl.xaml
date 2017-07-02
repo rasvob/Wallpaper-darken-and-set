@@ -8,32 +8,32 @@
              xmlns:valueConverters="clr-namespace:WallSetter_v2.ValueConverters"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance viewModels:WallpaperViewModel}">
-    
     <UserControl.Resources>
-        <valueConverters:ScaleValueConverter x:Key="ScaleValueConverter"></valueConverters:ScaleValueConverter>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ResizeThumb.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+
+            <valueConverters:ScaleValueConverter x:Key="ScaleValueConverter"></valueConverters:ScaleValueConverter>
+        </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid>
-        <Canvas Width="{Binding ActualWidth, ElementName=image}" Height="{Binding ActualHeight, ElementName=image}">
-            <Canvas.Background>
-                <VisualBrush  >
+        <Grid>
+            <Grid.Background>
+                <VisualBrush>
                     <VisualBrush.Visual>
-                        <Image x:Name="image" Source="{Binding ImagePath}" />
+                        <Image x:Name="image" Source="../Resources/placeholder.png" />
                     </VisualBrush.Visual>
                 </VisualBrush>
-            </Canvas.Background>
-        </Canvas>
-
-        <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            <Thumb.Template>
-                <ControlTemplate>
-                    <Ellipse Width="10" Height="10" Fill="{DynamicResource PrimaryHueMidBrush}"></Ellipse>
-                </ControlTemplate>
-            </Thumb.Template>
-
-            <Thumb.LayoutTransform>
-                <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ScaleValueConverter}}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ScaleValueConverter}}"></ScaleTransform>
-            </Thumb.LayoutTransform>
-        </Thumb>
+            </Grid.Background>
+        </Grid>
+       
+        <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
+        <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
+        <Thumb VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
+        <Thumb VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
+        
+        <TextBlock Text="1234" Foreground="{DynamicResource PrimaryHueMidBrush}" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 -20"></TextBlock>
     </Grid>
 </UserControl>
