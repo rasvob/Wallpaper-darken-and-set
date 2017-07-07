@@ -168,6 +168,9 @@ namespace WallSetter_v2.ViewModels
             {
                 if (value.Equals(_scale)) return;
                 _scale = value;
+                WallpaperViewModel.Scale = 1.0/value;
+                Debug.WriteLine(value);
+                Debug.WriteLine(WallpaperViewModel.Scale);
                 OnPropertyChanged();
             }
         }
@@ -241,7 +244,6 @@ namespace WallSetter_v2.ViewModels
             DownloadFromLinkCommand = new SimpleCommand(DownloadFromLinkExecute);
 
             FillOpacityItemSource();
-            //WallpaperViewModel.WallpaperModel.SizeChanged += OnWallpaperModelOnSizeChanged;
         }
 
         private void DownloadFromLinkExecute(object o)
@@ -251,7 +253,7 @@ namespace WallSetter_v2.ViewModels
 
         private void DownloadFromUnsplashExecute(object o)
         {
-            
+            Debug.WriteLine("ss");
         }
 
         private void DownloadFromWallhavenExecute(object o)

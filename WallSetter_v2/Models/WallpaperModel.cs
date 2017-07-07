@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WallpaperDownloader;
 using WallSetter_v2.Annotations;
@@ -13,6 +14,8 @@ namespace WallSetter_v2.Models
         private int _width;
         private int _height;
         private string _path;
+        private ImageSource _bitmapImage;
+        private MemoryStream _stream;
 
         public int Width
         {
@@ -40,12 +43,33 @@ namespace WallSetter_v2.Models
             set
             {
                 _path = value;
+                BitmapImage = new BitmapImage(new Uri(value, UriKind.Absolute));
                 OnPropertyChanged();
                 RefreshSize();
             }
         }
 
-        public MemoryStream Stream { get; set; }
+        public ImageSource BitmapImage
+        {
+            get => _bitmapImage;
+            set
+            {
+                if (Equals(value, _bitmapImage)) return;
+                _bitmapImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public MemoryStream Stream
+        {
+            get => _stream;
+            set
+            {
+                if (Equals(value, _stream)) return;
+                _stream = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event EventHandler SizeChanged;
 
@@ -71,9 +95,8 @@ namespace WallSetter_v2.Models
                 return;
             }
 
-            BitmapImage img = new BitmapImage(new Uri(Path, UriKind.Absolute));
-            Width = (int)img.Width;
-            Height = (int)img.Height;
+            Width = (int)BitmapImage.Width;
+            Height = (int)BitmapImage.Height;
         }
 
         public void DownloadWallpaper(DownloaderType type, string url)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Media.Imaging;
 using WallSetter_v2.Annotations;
 using WallSetter_v2.Models;
 
@@ -13,7 +14,18 @@ namespace WallSetter_v2.ViewModels
         private double _width;
         private double _height;
         private double _scale;
-        public WallpaperModel WallpaperModel { get; set; } = new WallpaperModel();
+        private WallpaperModel _wallpaperModel = new WallpaperModel();
+
+        public WallpaperModel WallpaperModel
+        {
+            get => _wallpaperModel;
+            set
+            {
+                if (Equals(value, _wallpaperModel)) return;
+                _wallpaperModel = value;
+                OnPropertyChanged();
+            }
+        }
 
         public double Scale
         {

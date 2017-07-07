@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using WallSetter_v2.Services;
 using WallSetter_v2.ViewModels;
 
@@ -17,6 +19,14 @@ namespace WallSetter_v2
         {
             InitializeComponent();
             ViewModel = new MainWindowViewModel(new OpenFileFromDialog());
+            WallpaperControl.ViewModel = ViewModel.WallpaperViewModel;
+            ViewModel.PropertyChanged += (sender, args) =>
+            {
+                //if (args.PropertyName.Equals("ImagePath"))
+                //{
+                //    WallpaperControl.WallpaperImage.Source = new BitmapImage(new Uri(ViewModel.ImagePath));
+                //}
+            };
             DataContext = ViewModel;
         }
 

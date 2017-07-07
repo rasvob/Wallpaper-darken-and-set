@@ -148,8 +148,11 @@
                                Canvas.Top="{Binding Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                        <wallpaperControl:WallpaperControl Width="{Binding WallpaperViewModel.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding WallpaperViewModel.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="200" Canvas.Left="200">
-                            
+                        <wallpaperControl:WallpaperControl x:Name="WallpaperControl" 
+                                                           Width="{Binding WallpaperViewModel.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                           Height="{Binding WallpaperViewModel.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                           Canvas.Top="{Binding WallpaperViewModel.Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                           Canvas.Left="{Binding WallpaperViewModel.Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                         </wallpaperControl:WallpaperControl>
                         
                         <Canvas.LayoutTransform>
@@ -170,6 +173,7 @@
                         </Button>
 
                         <Button ToolTip="Download from https://unsplash.com/"
+                                Command="{Binding DownloadFromUnsplashCommand}"
                                 Background="{DynamicResource PrimaryHueMidBrush}"
                                 Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
                             <materialDesign:PackIcon Kind="Camera" />
@@ -184,6 +188,7 @@
 
                         <Button ToolTip="Download from url"
                                 Background="{DynamicResource SecondaryAccentBrush}"
+                                Command="{Binding DownloadFromLinkCommand}"
                                 Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
                             <materialDesign:PackIcon Kind="Download" />
                         </Button>

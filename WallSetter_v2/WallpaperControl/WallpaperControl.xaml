@@ -23,7 +23,7 @@
             <Grid.Background>
                 <VisualBrush>
                     <VisualBrush.Visual>
-                        <Image x:Name="image" Source="../Resources/placeholder.png" />
+                        <Image x:Name="WallpaperImage" Source="../Resources/placeholder.png" />
                     </VisualBrush.Visual>
                 </VisualBrush>
             </Grid.Background>
@@ -32,8 +32,13 @@
         <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
         <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
         <Thumb VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
-        <Thumb VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
-        
-        <TextBlock Text="1234" Foreground="{DynamicResource PrimaryHueMidBrush}" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 -20"></TextBlock>
+        <Thumb VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" >
+            <!--<Thumb.LayoutTransform>
+                <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>
+            </Thumb.LayoutTransform>-->
+        </Thumb>
+
+        <TextBlock Text="{Binding WallpaperModel.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="{DynamicResource PrimaryHueMidBrush}" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 -20"></TextBlock>
+        <TextBlock Text="{Binding WallpaperModel.Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="{DynamicResource PrimaryHueMidBrush}" FontSize="15" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 -20"></TextBlock>
     </Grid>
 </UserControl>
