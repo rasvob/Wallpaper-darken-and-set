@@ -19,11 +19,11 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid>
+        <Grid Width="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             <Grid.Background>
                 <VisualBrush>
                     <VisualBrush.Visual>
-                        <Image x:Name="WallpaperImage" Source="../Resources/placeholder.png" />
+                        <Image x:Name="WallpaperImage" Source="{Binding WallpaperModel.Path, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                     </VisualBrush.Visual>
                 </VisualBrush>
             </Grid.Background>
@@ -38,7 +38,23 @@
             </Thumb.LayoutTransform>-->
         </Thumb>
 
-        <TextBlock Text="{Binding WallpaperModel.Width, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="{DynamicResource PrimaryHueMidBrush}" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0 -20"></TextBlock>
-        <TextBlock Text="{Binding WallpaperModel.Height, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="{DynamicResource PrimaryHueMidBrush}" FontSize="15" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0 -20"></TextBlock>
+        <TextBlock Text="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                   Foreground="{DynamicResource PrimaryHueMidBrush}" 
+                   FontSize="15" VerticalAlignment="Bottom" 
+                   HorizontalAlignment="Center" 
+                   >
+            <TextBlock.LayoutTransform>
+                <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>
+            </TextBlock.LayoutTransform>
+        </TextBlock>
+        
+        <TextBlock Text="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                   Foreground="{DynamicResource PrimaryHueMidBrush}" 
+                   FontSize="15" VerticalAlignment="Center" 
+                   HorizontalAlignment="Right">
+            <TextBlock.LayoutTransform>
+                <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>
+            </TextBlock.LayoutTransform>
+        </TextBlock>
     </Grid>
 </UserControl>

@@ -168,9 +168,7 @@ namespace WallSetter_v2.ViewModels
             {
                 if (value.Equals(_scale)) return;
                 _scale = value;
-                WallpaperViewModel.Scale = 1.0/value;
-                Debug.WriteLine(value);
-                Debug.WriteLine(WallpaperViewModel.Scale);
+                WallpaperViewModel.Scale = 1.0 / value;
                 OnPropertyChanged();
             }
         }
@@ -196,13 +194,14 @@ namespace WallSetter_v2.ViewModels
 
         private readonly int[] _widthArray = { 1280, 1366, 1440, 1600, 1680, 1920, 2560, 3840, 5760, 3840, 5120 };
         private readonly int[] _heightArray = { 768, 800, 900, 960, 1024, 1200, 1050, 1080, 1440, 1600, 2160, 2880 };
-        private double _top;
-        private double _left;
+        private double _top = 100;
+        private double _left = 100;
         private ObservableCollection<string> _wallpaperStyleItemSource = new ObservableCollection<string>() { "Tiled", "Centered", "Stretched" };
         private string _selectedStyle;
         private string _imagePath;
         private double _scale = 1;
         private ISnackbarMessageQueue _messageQueue;
+        private WallpaperViewModel _wallpaperViewModel = new WallpaperViewModel();
 
         public ICommand SetWallpaperCommand { get; }
         public ICommand LoadFromFileCommand { get; }
@@ -210,7 +209,16 @@ namespace WallSetter_v2.ViewModels
         public ICommand DownloadFromUnsplashCommand { get; }
         public ICommand DownloadFromLinkCommand { get; }
 
-        public WallpaperViewModel WallpaperViewModel { get; set; } = new WallpaperViewModel();
+        public WallpaperViewModel WallpaperViewModel
+        {
+            get => _wallpaperViewModel;
+            set
+            {
+                if (Equals(value, _wallpaperViewModel)) return;
+                _wallpaperViewModel = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool UseCustomSize
         {
@@ -220,12 +228,12 @@ namespace WallSetter_v2.ViewModels
                 if (value == _useCustomSize) return;
                 _useCustomSize = value;
 
-                if (!UseCustomSize)
-                {
-                    Width = WallpaperViewModel.WallpaperModel.Width;
-                    Height = WallpaperViewModel.WallpaperModel.Height;
-                    Top = Left = 0;
-                }
+                //if (!UseCustomSize)
+                //{
+                //    Width = WallpaperViewModel.WallpaperModel.Width;
+                //    Height = WallpaperViewModel.WallpaperModel.Height;
+                //    Top = Left = 0;
+                //}
 
                 OnPropertyChanged();
             }
@@ -299,6 +307,9 @@ namespace WallSetter_v2.ViewModels
             if (file != null)
             {
                 WallpaperViewModel.WallpaperModel.Path = file;
+                Size size = WallpaperViewModel.WallpaperModel.RefreshSize();
+                WallpaperViewModel.Width = size.Width;
+                WallpaperViewModel.Height = size.Height;
                 MemoryStream memoryStream = new MemoryStream();
                 using (FileStream fs = File.OpenRead(file))
                 {

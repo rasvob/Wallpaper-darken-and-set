@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
@@ -23,7 +24,6 @@ namespace WallSetter_v2.Models
             set
             {
                 _width = value; 
-                OnSizeChanged();
             }
         }
 
@@ -33,7 +33,6 @@ namespace WallSetter_v2.Models
             set
             {
                 _height = value;
-                OnSizeChanged();
             }
         }
 
@@ -45,7 +44,6 @@ namespace WallSetter_v2.Models
                 _path = value;
                 BitmapImage = new BitmapImage(new Uri(value, UriKind.Absolute));
                 OnPropertyChanged();
-                RefreshSize();
             }
         }
 
@@ -88,15 +86,16 @@ namespace WallSetter_v2.Models
             return height <= Height;
         }
 
-        public void RefreshSize()
+        public Size RefreshSize()
         {
             if (Path ==  null)
             {
-                return;
+                throw new ApplicationException("Path can't be null");
             }
-
-            Width = (int)BitmapImage.Width;
-            Height = (int)BitmapImage.Height;
+            BitmapImage img = new BitmapImage(new Uri(Path, UriKind.Absolute));
+            Width = (int)img.Width;
+            Height = (int)img.Height;
+            return new Size(Width, Height);
         }
 
         public void DownloadWallpaper(DownloaderType type, string url)

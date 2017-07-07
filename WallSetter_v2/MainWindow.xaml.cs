@@ -20,23 +20,7 @@ namespace WallSetter_v2
             InitializeComponent();
             ViewModel = new MainWindowViewModel(new OpenFileFromDialog());
             WallpaperControl.ViewModel = ViewModel.WallpaperViewModel;
-            ViewModel.PropertyChanged += (sender, args) =>
-            {
-                //if (args.PropertyName.Equals("ImagePath"))
-                //{
-                //    WallpaperControl.WallpaperImage.Source = new BitmapImage(new Uri(ViewModel.ImagePath));
-                //}
-            };
             DataContext = ViewModel;
-        }
-
-        private void ThumbCover_OnDragDelta(object sender, DragDeltaEventArgs e)
-        {
-            double vc = e.VerticalChange;
-            double hc = e.HorizontalChange;
-            ViewModel.ValidateAndSetupChange(ref hc, ref vc);
-            ViewModel.Top += vc;
-            ViewModel.Left += hc;
         }
 
         private void ScrollViewer_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)

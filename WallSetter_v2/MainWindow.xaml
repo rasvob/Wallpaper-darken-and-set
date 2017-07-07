@@ -25,7 +25,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <valueConverters:OpacityValueConverter x:Key="OpacityValueConverter" ></valueConverters:OpacityValueConverter>
-            <valueConverters:ScaleValueConverter x:Key="ScaleValueConverter"></valueConverters:ScaleValueConverter>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -149,10 +148,10 @@
                                Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                         <wallpaperControl:WallpaperControl x:Name="WallpaperControl" 
-                                                           Width="{Binding WallpaperViewModel.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                           Height="{Binding WallpaperViewModel.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                           Canvas.Top="{Binding WallpaperViewModel.Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                           Canvas.Left="{Binding WallpaperViewModel.Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                                           Width="{Binding WallpaperViewModel.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                           Height="{Binding WallpaperViewModel.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                           Canvas.Top="{Binding Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                           Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
                         </wallpaperControl:WallpaperControl>
                         
                         <Canvas.LayoutTransform>
@@ -161,10 +160,11 @@
                     </Canvas>
                 </ScrollViewer>
 
-                <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}" Margin="40"
-                                         HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}" 
+                                         Margin="40"
+                                         HorizontalAlignment="Right" 
+                                         VerticalAlignment="Bottom">
                     <StackPanel>
-                        
                         <Button ToolTip="Load wallpaper from file"
                                 Command="{Binding LoadFromFileCommand}"
                                 Background="CornflowerBlue"

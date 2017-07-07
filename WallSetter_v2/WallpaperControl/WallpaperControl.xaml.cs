@@ -41,7 +41,41 @@ namespace WallSetter_v2.WallpaperControl
 
         private void Thumb_OnDragDelta(object sender, DragDeltaEventArgs e)
         {
-            
+            var thumb = sender as Thumb;
+
+            if (thumb != null)
+            {
+                double change = e.VerticalChange;
+                switch (thumb.VerticalAlignment)
+                {
+                    case VerticalAlignment.Top:
+                        switch (thumb.HorizontalAlignment)
+                        {
+                            case HorizontalAlignment.Left:
+                                ViewModel.Top += change;
+                                ViewModel.Left += change;
+                                break;
+                            case HorizontalAlignment.Right:
+                                ViewModel.Width += change;
+                                ViewModel.Top += change;
+                                break;
+                        }
+                        break;
+                    case VerticalAlignment.Bottom:
+                        switch (thumb.HorizontalAlignment)
+                        {
+                            case HorizontalAlignment.Left:
+                                ViewModel.Height += change;
+                                ViewModel.Left -= change;
+                                break;
+                            case HorizontalAlignment.Right:
+                                ViewModel.Width += change;
+                                ViewModel.Height += change;
+                                break;
+                        }
+                        break;
+                }
+            }
         }
     }
 }

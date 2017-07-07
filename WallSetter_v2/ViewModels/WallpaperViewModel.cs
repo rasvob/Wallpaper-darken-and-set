@@ -7,13 +7,13 @@ using WallSetter_v2.Models;
 
 namespace WallSetter_v2.ViewModels
 {
-    public class WallpaperViewModel:INotifyPropertyChanged
+    public class WallpaperViewModel: INotifyPropertyChanged
     {
-        private double _left;
-        private double _top;
+        private double _left = 400;
+        private double _top = 200;
         private double _width;
         private double _height;
-        private double _scale;
+        private double _scale = 1;
         private WallpaperModel _wallpaperModel = new WallpaperModel();
 
         public WallpaperModel WallpaperModel
@@ -84,13 +84,7 @@ namespace WallSetter_v2.ViewModels
 
         public WallpaperViewModel()
         {
-            WallpaperModel.SizeChanged += WallpaperModelOnSizeChanged;
-        }
-
-        private void WallpaperModelOnSizeChanged(object sender, EventArgs eventArgs)
-        {
-            Width = WallpaperModel.Width;
-            Height = WallpaperModel.Height;
+            //WallpaperModel.SizeChanged += WallpaperModelOnSizeChanged;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
