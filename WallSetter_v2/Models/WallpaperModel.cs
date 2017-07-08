@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WallpaperDownloader;
 using WallSetter_v2.Annotations;
@@ -12,29 +11,12 @@ namespace WallSetter_v2.Models
 {
     public class WallpaperModel: INotifyPropertyChanged
     {
-        private int _width;
-        private int _height;
         private string _path;
-        private ImageSource _bitmapImage;
         private MemoryStream _stream;
 
-        public int Width
-        {
-            get => _width;
-            set
-            {
-                _width = value; 
-            }
-        }
+        public int Width { get; set; }
 
-        public int Height
-        {
-            get => _height;
-            set
-            {
-                _height = value;
-            }
-        }
+        public int Height { get; set; }
 
         public string Path
         {
@@ -42,18 +24,6 @@ namespace WallSetter_v2.Models
             set
             {
                 _path = value;
-                BitmapImage = new BitmapImage(new Uri(value, UriKind.Absolute));
-                OnPropertyChanged();
-            }
-        }
-
-        public ImageSource BitmapImage
-        {
-            get => _bitmapImage;
-            set
-            {
-                if (Equals(value, _bitmapImage)) return;
-                _bitmapImage = value;
                 OnPropertyChanged();
             }
         }

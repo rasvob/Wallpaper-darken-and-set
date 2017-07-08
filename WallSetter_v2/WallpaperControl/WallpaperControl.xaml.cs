@@ -22,6 +22,16 @@ namespace WallSetter_v2.WallpaperControl
     /// </summary>
     public partial class WallpaperControl : UserControl
     {
+        public static readonly DependencyProperty RootCanvasProperty = DependencyProperty.Register(
+            "RootCanvas", typeof(Canvas), typeof(WallpaperControl), new PropertyMetadata(default(Canvas)));
+
+        public Canvas RootCanvas
+        {
+            get => (Canvas) GetValue(RootCanvasProperty);
+            set => SetValue(RootCanvasProperty, value);
+        }
+
+
         private WallpaperViewModel _viewModel;
 
         public WallpaperViewModel ViewModel
@@ -52,12 +62,18 @@ namespace WallSetter_v2.WallpaperControl
                         switch (thumb.HorizontalAlignment)
                         {
                             case HorizontalAlignment.Left:
-                                ViewModel.Top += change;
-                                ViewModel.Left += change;
+                                ViewModel.TopCoordinate += change;
+                                ViewModel.LeftCoordinate += change;
+                                ViewModel.Width -= change;
+                                ViewModel.Height -= change;
+                                Canvas.SetTop(this, ViewModel.TopCoordinate);
+                                Canvas.SetLeft(this, ViewModel.LeftCoordinate);
                                 break;
                             case HorizontalAlignment.Right:
-                                ViewModel.Width += change;
-                                ViewModel.Top += change;
+                                ViewModel.Width -= change;
+                                ViewModel.Height -= change;
+                                ViewModel.TopCoordinate += change;
+                                Canvas.SetTop(this, ViewModel.TopCoordinate);
                                 break;
                         }
                         break;
@@ -66,7 +82,9 @@ namespace WallSetter_v2.WallpaperControl
                         {
                             case HorizontalAlignment.Left:
                                 ViewModel.Height += change;
-                                ViewModel.Left -= change;
+                                ViewModel.LeftCoordinate -= change;
+                                ViewModel.Width += change;
+                                Canvas.SetLeft(this, ViewModel.LeftCoordinate);
                                 break;
                             case HorizontalAlignment.Right:
                                 ViewModel.Width += change;
@@ -75,6 +93,8 @@ namespace WallSetter_v2.WallpaperControl
                         }
                         break;
                 }
+
+                e.Handled = true;
             }
         }
     }

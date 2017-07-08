@@ -139,19 +139,20 @@
                               PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel"
                               Background="{StaticResource MaterialDesignBackground}"
                               x:Name="ScrollViewer">
-                    <Canvas Width="10000" Height="10000">
+                    <Canvas Width="10000" Height="10000" x:Name="RootCanvas">
                         <Thumb Width="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                                Height="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                                Background="Black" 
                                Opacity="{Binding Opacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                Canvas.Top="{Binding Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                               Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                               Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                               />
 
                         <wallpaperControl:WallpaperControl x:Name="WallpaperControl" 
                                                            Width="{Binding WallpaperViewModel.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                            Height="{Binding WallpaperViewModel.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                           Canvas.Top="{Binding Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                           Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                                                           RootCanvas="{Binding ElementName=RootCanvas}"
+                                                           >
                         </wallpaperControl:WallpaperControl>
                         
                         <Canvas.LayoutTransform>

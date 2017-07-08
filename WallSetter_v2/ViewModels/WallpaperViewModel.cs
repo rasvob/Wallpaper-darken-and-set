@@ -9,12 +9,36 @@ namespace WallSetter_v2.ViewModels
 {
     public class WallpaperViewModel: INotifyPropertyChanged
     {
-        private double _left = 400;
-        private double _top = 200;
         private double _width;
         private double _height;
         private double _scale = 1;
         private WallpaperModel _wallpaperModel = new WallpaperModel();
+        private double _topCoordinate;
+        private double _leftCoordinate;
+
+        public double TopCoordinate
+        {
+            get => _topCoordinate;
+            set
+            {
+                if (value.Equals(_topCoordinate)) return;
+                _topCoordinate = value;
+                OnCoordinateChanged();
+                OnPropertyChanged();
+            }
+        }
+
+        public double LeftCoordinate
+        {
+            get => _leftCoordinate;
+            set
+            {
+                if (value.Equals(_leftCoordinate)) return;
+                _leftCoordinate = value;
+                OnCoordinateChanged();
+                OnPropertyChanged();
+            }
+        }
 
         public WallpaperModel WallpaperModel
         {
@@ -34,28 +58,6 @@ namespace WallSetter_v2.ViewModels
             {
                 if (value.Equals(_scale)) return;
                 _scale = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public double Left
-        {
-            get => _left;
-            set
-            {
-                if (value.Equals(_left)) return;
-                _left = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public double Top
-        {
-            get => _top;
-            set
-            {
-                if (value.Equals(_top)) return;
-                _top = value;
                 OnPropertyChanged();
             }
         }
@@ -84,15 +86,21 @@ namespace WallSetter_v2.ViewModels
 
         public WallpaperViewModel()
         {
-            //WallpaperModel.SizeChanged += WallpaperModelOnSizeChanged;
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler CoordinateChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected virtual void OnCoordinateChanged()
+        {
+            CoordinateChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -19,7 +19,9 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid Width="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+        <Grid Width="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+              Height="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+              >
             <Grid.Background>
                 <VisualBrush>
                     <VisualBrush.Visual>
@@ -28,33 +30,10 @@
                 </VisualBrush>
             </Grid.Background>
         </Grid>
-       
+
         <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
         <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
         <Thumb VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
-        <Thumb VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" >
-            <!--<Thumb.LayoutTransform>
-                <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>
-            </Thumb.LayoutTransform>-->
-        </Thumb>
-
-        <TextBlock Text="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                   Foreground="{DynamicResource PrimaryHueMidBrush}" 
-                   FontSize="15" VerticalAlignment="Bottom" 
-                   HorizontalAlignment="Center" 
-                   >
-            <TextBlock.LayoutTransform>
-                <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>
-            </TextBlock.LayoutTransform>
-        </TextBlock>
-        
-        <TextBlock Text="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                   Foreground="{DynamicResource PrimaryHueMidBrush}" 
-                   FontSize="15" VerticalAlignment="Center" 
-                   HorizontalAlignment="Right">
-            <TextBlock.LayoutTransform>
-                <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>
-            </TextBlock.LayoutTransform>
-        </TextBlock>
+        <Thumb VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
     </Grid>
 </UserControl>
