@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Media.Imaging;
 using WallSetter_v2.Annotations;
@@ -70,6 +71,7 @@ namespace WallSetter_v2.ViewModels
                 if (value.Equals(_width)) return;
                 _width = value;
                 OnPropertyChanged();
+                Debug.WriteLine(Width / Height);
             }
         }
 

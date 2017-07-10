@@ -185,8 +185,8 @@ namespace WallSetter_v2.ViewModels
         }
 
         private bool _useCustomSize;
-        private int _height = 768;
-        private int _width = 1280;
+        private int _height;
+        private int _width;
         private double _opacity = 0;
         private ObservableCollection<string> _opacityItemSource = new ObservableCollection<string>();
         private ObservableCollection<int> _widthItemSource = new ObservableCollection<int>();
@@ -194,8 +194,8 @@ namespace WallSetter_v2.ViewModels
 
         private readonly int[] _widthArray = { 1280, 1366, 1440, 1600, 1680, 1920, 2560, 3840, 5760, 3840, 5120 };
         private readonly int[] _heightArray = { 768, 800, 900, 960, 1024, 1200, 1050, 1080, 1440, 1600, 2160, 2880 };
-        private double _top = 100;
-        private double _left = 200;
+        private double _top;
+        private double _left;
         private ObservableCollection<string> _wallpaperStyleItemSource = new ObservableCollection<string>() { "Tiled", "Centered", "Stretched" };
         private string _selectedStyle;
         private string _imagePath;

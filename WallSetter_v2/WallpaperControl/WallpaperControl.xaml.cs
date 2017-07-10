@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -56,6 +57,15 @@ namespace WallSetter_v2.WallpaperControl
             if (thumb != null)
             {
                 double change = e.VerticalChange;
+                double horizontalChange =
+                    (ViewModel.Width + change - ViewModel.WallpaperModel.Ratio * ViewModel.Height) /
+                    ViewModel.WallpaperModel.Ratio;
+
+                if (change == 0 || Math.Abs(horizontalChange) < 0.02 || double.IsInfinity(horizontalChange))
+                {
+                    e.Handled = true;
+                    return;
+                }
                 switch (thumb.VerticalAlignment)
                 {
                     case VerticalAlignment.Top:
@@ -63,14 +73,14 @@ namespace WallSetter_v2.WallpaperControl
                         {
                             case HorizontalAlignment.Left:
                                 ViewModel.TopCoordinate += change;
-                                ViewModel.LeftCoordinate += change;
-                                ViewModel.Width -= change;
+                                ViewModel.LeftCoordinate += horizontalChange;
+                                ViewModel.Width -= horizontalChange;
                                 ViewModel.Height -= change;
                                 Canvas.SetTop(this, ViewModel.TopCoordinate);
                                 Canvas.SetLeft(this, ViewModel.LeftCoordinate);
                                 break;
                             case HorizontalAlignment.Right:
-                                ViewModel.Width -= change;
+                                ViewModel.Width -= horizontalChange;
                                 ViewModel.Height -= change;
                                 ViewModel.TopCoordinate += change;
                                 Canvas.SetTop(this, ViewModel.TopCoordinate);
@@ -81,19 +91,18 @@ namespace WallSetter_v2.WallpaperControl
                         switch (thumb.HorizontalAlignment)
                         {
                             case HorizontalAlignment.Left:
-                                ViewModel.Height += change;
-                                ViewModel.LeftCoordinate -= change;
+                                ViewModel.Height += horizontalChange;
+                                ViewModel.LeftCoordinate -= horizontalChange;
                                 ViewModel.Width += change;
                                 Canvas.SetLeft(this, ViewModel.LeftCoordinate);
                                 break;
                             case HorizontalAlignment.Right:
                                 ViewModel.Width += change;
-                                ViewModel.Height += change;
+                                ViewModel.Height += horizontalChange;
                                 break;
                         }
                         break;
                 }
-
                 e.Handled = true;
             }
         }

@@ -81,10 +81,7 @@ namespace WallpaperSetter_WPF
 
 		protected virtual void OnLinkSet()
 		{
-			if(LinkSet != null)
-			{
-				LinkSet(this, _link);
-			}
-		}
+            LinkSet?.Invoke(this, _link);
+        }
 	}
 }

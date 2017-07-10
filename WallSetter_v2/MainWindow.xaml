@@ -123,6 +123,12 @@
                               SelectedValue="{Binding SelectedStyle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               >
                     </ComboBox>
+
+                    <TextBlock Text="Current dimensions" FontSize="18" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{Binding WallpaperViewModel.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
+                        <TextBlock Text="{Binding WallpaperViewModel.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
+                    </StackPanel>
                 </StackPanel>
 
                 <!--SetWall-->
