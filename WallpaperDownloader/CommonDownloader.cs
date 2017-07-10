@@ -16,7 +16,7 @@ namespace WallpaperDownloader
             throw new System.NotImplementedException();
         }
 
-        public (string path, MemoryStream stream) DownloadWallpaper()
+        public string DownloadWallpaper()
         {
             throw new System.NotImplementedException();
         }

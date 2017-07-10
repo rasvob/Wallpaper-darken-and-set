@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Visibility="{Binding IsVisible, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
         <Grid Width="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
               Height="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
               >

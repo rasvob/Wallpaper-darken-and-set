@@ -1,9 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Controls.Primitives;
+﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using WallSetter_v2.Services;
 using WallSetter_v2.ViewModels;
 
@@ -15,6 +11,7 @@ namespace WallSetter_v2
     public partial class MainWindow : Window
     {
         public MainWindowViewModel ViewModel { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();

@@ -145,21 +145,19 @@
                               PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel"
                               Background="{StaticResource MaterialDesignBackground}"
                               x:Name="ScrollViewer">
-                    <Canvas Width="10000" Height="10000" x:Name="RootCanvas" Background="#fafafa">
+                    <Canvas Width="{Binding CanvasWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Height="{Binding CanvasHeight, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" x:Name="RootCanvas" Background="#fafafa">
                         <Thumb Width="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                                Height="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                                Background="Black" 
                                Opacity="{Binding Opacity, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                Canvas.Top="{Binding Top, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                Canvas.Left="{Binding Left, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                               Canvas.ZIndex="100"
+                               IsHitTestVisible="False"
                                />
 
                         <wallpaperControl:WallpaperControl x:Name="WallpaperControl" 
-                                                           Width="{Binding WallpaperViewModel.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                           Height="{Binding WallpaperViewModel.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                           RootCanvas="{Binding ElementName=RootCanvas}"
-                                                           >
-                        </wallpaperControl:WallpaperControl>
+                                                           RootCanvas="{Binding ElementName=RootCanvas}" />
                         
                         <Canvas.LayoutTransform>
                             <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>

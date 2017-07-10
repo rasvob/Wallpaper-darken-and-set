@@ -29,8 +29,15 @@ namespace WallSetter_v2.WallpaperControl
             set
             {
                 _viewModel = value;
+                _viewModel.CoordinateChanged += ViewModelOnCoordinateChanged;
                 DataContext = _viewModel;
             }
+        }
+
+        private void ViewModelOnCoordinateChanged(object sender, EventArgs eventArgs)
+        {
+            Canvas.SetTop(this, ViewModel.TopCoordinate);
+            Canvas.SetLeft(this, ViewModel.LeftCoordinate);
         }
 
         public WallpaperControl()

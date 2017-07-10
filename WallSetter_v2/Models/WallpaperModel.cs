@@ -48,12 +48,12 @@ namespace WallSetter_v2.Models
 
         public bool ValidateWidth(int width)
         {
-            return width <= Width;
+            return width > 0;
         }
 
         public bool ValidateHeight(int height)
         {
-            return height <= Height;
+            return height > 0;
         }
 
         public Size RefreshSize()
@@ -71,10 +71,8 @@ namespace WallSetter_v2.Models
         public void DownloadWallpaper(DownloaderType type, string url)
         {
             IWallpaperDownloader downloader = WallpaperDownloaderFactory.CreateDownloaderInstance(type, url);
-            (string path, MemoryStream stream) wallpaper = downloader.DownloadWallpaper();
-            Path = wallpaper.path;
-            Stream = wallpaper.stream;
-            RefreshSize();
+            string wallpaper = downloader.DownloadWallpaper();
+            Path = wallpaper;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

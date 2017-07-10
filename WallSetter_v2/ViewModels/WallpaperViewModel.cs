@@ -2,9 +2,11 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using WallSetter_v2.Annotations;
 using WallSetter_v2.Models;
+using WallSetter_v2.ValueConverters;
 
 namespace WallSetter_v2.ViewModels
 {
@@ -16,9 +18,21 @@ namespace WallSetter_v2.ViewModels
         private WallpaperModel _wallpaperModel = new WallpaperModel();
         private double _topCoordinate;
         private double _leftCoordinate;
+        private Visibility _isVisible = Visibility.Collapsed;
 
         public static readonly double MinWidth = 800;
         public static readonly double MinHeight = 600;
+
+        public Visibility IsVisible
+        {
+            get => _isVisible;
+            set
+            {
+                if (value == _isVisible) return;
+                _isVisible = value;
+                OnPropertyChanged();
+            }
+        }
 
         public double TopCoordinate
         {
@@ -27,7 +41,6 @@ namespace WallSetter_v2.ViewModels
             {
                 if (value.Equals(_topCoordinate)) return;
                 _topCoordinate = value;
-                OnCoordinateChanged();
                 OnPropertyChanged();
             }
         }
@@ -39,7 +52,6 @@ namespace WallSetter_v2.ViewModels
             {
                 if (value.Equals(_leftCoordinate)) return;
                 _leftCoordinate = value;
-                OnCoordinateChanged();
                 OnPropertyChanged();
             }
         }
@@ -92,6 +104,11 @@ namespace WallSetter_v2.ViewModels
         public WallpaperViewModel()
         {
 
+        }
+
+        public void UpdateCoordinates()
+        {
+            OnCoordinateChanged();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

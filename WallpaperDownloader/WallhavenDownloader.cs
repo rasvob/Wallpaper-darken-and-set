@@ -22,26 +22,25 @@ namespace WallpaperDownloader
             return true;
         }
 
-        public (string path, MemoryStream stream) DownloadWallpaper()
+        public string DownloadWallpaper()
         {
             var url = GetImageUrl();
             string fileName;
-            MemoryStream memoryStream;
             using (WebClient wc = new WebClient())
             {
                 byte[] data = wc.DownloadData(url);
-                memoryStream = new MemoryStream(data);
 
-                using (var img = Image.FromStream(memoryStream))
+                using (MemoryStream memoryStream = new MemoryStream(data))
                 {
-                    fileName = Path.GetTempFileName();
-                    fileName = fileName.Substring(0, fileName.IndexOf('.')) + ".png";
-                    img.Save(fileName, ImageFormat.Png);
+                    using (var img = Image.FromStream(memoryStream))
+                    {
+                        fileName = Path.GetTempFileName();
+                        fileName = fileName + ".png";
+                        img.Save(fileName, ImageFormat.Png);
+                    }
                 }
-                memoryStream.Seek(0, SeekOrigin.Begin);
             }
-
-            return (fileName, memoryStream);
+            return fileName;
         }
 
         private string GetImageUrl()
