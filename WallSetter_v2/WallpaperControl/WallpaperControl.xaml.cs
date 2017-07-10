@@ -1,19 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WallSetter_v2.ViewModels;
 
 namespace WallSetter_v2.WallpaperControl
@@ -56,55 +44,102 @@ namespace WallSetter_v2.WallpaperControl
 
             if (thumb != null)
             {
-                double change = e.VerticalChange;
-                double horizontalChange =
-                    (ViewModel.Width + change - ViewModel.WallpaperModel.Ratio * ViewModel.Height) /
+                double vertChange = e.VerticalChange;
+                double horChange =
+                    (ViewModel.Width + vertChange - ViewModel.WallpaperModel.Ratio * ViewModel.Height) /
                     ViewModel.WallpaperModel.Ratio;
 
-                if (change == 0 || Math.Abs(horizontalChange) < 0.02 || double.IsInfinity(horizontalChange))
-                {
-                    e.Handled = true;
-                    return;
-                }
                 switch (thumb.VerticalAlignment)
                 {
                     case VerticalAlignment.Top:
+                        if (ViewModel.Width - horChange < WallpaperViewModel.MinWidth && horChange > 0 || ViewModel.Height - vertChange < WallpaperViewModel.MinHeight && vertChange > 0)
+                        {
+                            return;
+                        }
+
                         switch (thumb.HorizontalAlignment)
                         {
                             case HorizontalAlignment.Left:
-                                ViewModel.TopCoordinate += change;
-                                ViewModel.LeftCoordinate += horizontalChange;
-                                ViewModel.Width -= horizontalChange;
-                                ViewModel.Height -= change;
+                                if (ViewModel.TopCoordinate + vertChange <= 0 || ViewModel.LeftCoordinate + horChange <= 0)
+                                {
+                                    return;
+                                }
+
+                                ViewModel.TopCoordinate += vertChange;
+                                ViewModel.LeftCoordinate += horChange;
+                                ViewModel.Width -= horChange;
+                                ViewModel.Height -= vertChange;
                                 Canvas.SetTop(this, ViewModel.TopCoordinate);
                                 Canvas.SetLeft(this, ViewModel.LeftCoordinate);
                                 break;
                             case HorizontalAlignment.Right:
-                                ViewModel.Width -= horizontalChange;
-                                ViewModel.Height -= change;
-                                ViewModel.TopCoordinate += change;
+                                if (ViewModel.TopCoordinate + vertChange <= 0 || ViewModel.Width + ViewModel.LeftCoordinate - horChange >= RootCanvas.ActualWidth)
+                                {
+                                    return;
+                                }
+
+                                ViewModel.Width -= horChange;
+                                ViewModel.Height -= vertChange;
+                                ViewModel.TopCoordinate += vertChange;
                                 Canvas.SetTop(this, ViewModel.TopCoordinate);
                                 break;
                         }
                         break;
                     case VerticalAlignment.Bottom:
+                        if (ViewModel.Width + vertChange <= WallpaperViewModel.MinWidth && vertChange < 0 || ViewModel.Height + horChange <= WallpaperViewModel.MinHeight && horChange < 0)
+                        {
+                            return;
+                        }
+
                         switch (thumb.HorizontalAlignment)
                         {
                             case HorizontalAlignment.Left:
-                                ViewModel.Height += horizontalChange;
-                                ViewModel.LeftCoordinate -= horizontalChange;
-                                ViewModel.Width += change;
+                                if (ViewModel.TopCoordinate + ViewModel.Height + horChange >= RootCanvas.ActualHeight || ViewModel.LeftCoordinate - vertChange <= 0)
+                                {
+                                    return;
+                                }
+
+                                ViewModel.Height += horChange;
+                                ViewModel.Width += vertChange;
+                                ViewModel.LeftCoordinate -= vertChange;
                                 Canvas.SetLeft(this, ViewModel.LeftCoordinate);
                                 break;
                             case HorizontalAlignment.Right:
-                                ViewModel.Width += change;
-                                ViewModel.Height += horizontalChange;
+                                if (ViewModel.TopCoordinate + ViewModel.Height + horChange >= RootCanvas.ActualHeight || ViewModel.Width + ViewModel.LeftCoordinate + vertChange >= RootCanvas.ActualWidth)
+                                {
+                                    return;
+                                }
+
+                                ViewModel.Width += vertChange;
+                                ViewModel.Height += horChange;
                                 break;
                         }
                         break;
                 }
                 e.Handled = true;
             }
+        }
+
+        private void MoveThumb_OnDragDelta(object sender, DragDeltaEventArgs e)
+        {
+            double horChange = e.HorizontalChange;
+            double vertChange = e.VerticalChange;
+
+            if (ViewModel.LeftCoordinate + e.HorizontalChange <= 0 && e.HorizontalChange < 0 || ViewModel.LeftCoordinate + ViewModel.Width + e.HorizontalChange >= RootCanvas.ActualWidth && e.HorizontalChange > 0)
+            {
+                horChange = 0;
+            }
+
+            if (ViewModel.TopCoordinate + e.VerticalChange <= 0 && e.VerticalChange < 0 || ViewModel.TopCoordinate + ViewModel.Height + e.VerticalChange >= RootCanvas.ActualHeight && e.VerticalChange > 0)
+            {
+                vertChange = 0;
+            }
+
+            ViewModel.LeftCoordinate += horChange;
+            ViewModel.TopCoordinate += vertChange;
+            Canvas.SetLeft(this, ViewModel.LeftCoordinate);
+            Canvas.SetTop(this, ViewModel.TopCoordinate);
+            e.Handled = true;
         }
     }
 }

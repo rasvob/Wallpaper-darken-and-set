@@ -30,10 +30,12 @@
                 </VisualBrush>
             </Grid.Background>
         </Grid>
-
-        <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
-        <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
-        <Thumb VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
-        <Thumb VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" />
+        
+        <Thumb Cursor="SizeAll" DragDelta="MoveThumb_OnDragDelta"></Thumb>
+        
+        <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" Cursor="SizeNWSE" />
+        <Thumb VerticalAlignment="Bottom" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" Cursor="SizeNESW" />
+        <Thumb VerticalAlignment="Top" HorizontalAlignment="Right" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" Cursor="SizeNESW" />
+        <Thumb VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource ResizeThumbStyle}" DragDelta="Thumb_OnDragDelta" Cursor="SizeNWSE" />
     </Grid>
 </UserControl>

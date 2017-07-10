@@ -145,7 +145,7 @@
                               PreviewMouseWheel="ScrollViewer_OnPreviewMouseWheel"
                               Background="{StaticResource MaterialDesignBackground}"
                               x:Name="ScrollViewer">
-                    <Canvas Width="10000" Height="10000" x:Name="RootCanvas">
+                    <Canvas Width="10000" Height="10000" x:Name="RootCanvas" Background="#fafafa">
                         <Thumb Width="{Binding Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                                Height="{Binding Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
                                Background="Black" 

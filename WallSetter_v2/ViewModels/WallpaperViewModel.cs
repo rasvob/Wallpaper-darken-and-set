@@ -17,6 +17,9 @@ namespace WallSetter_v2.ViewModels
         private double _topCoordinate;
         private double _leftCoordinate;
 
+        public static readonly double MinWidth = 800;
+        public static readonly double MinHeight = 600;
+
         public double TopCoordinate
         {
             get => _topCoordinate;

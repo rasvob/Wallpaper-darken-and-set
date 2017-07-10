@@ -12,8 +12,6 @@
         
         <Setter Property="SnapsToDevicePixels" Value="True"></Setter>
         
-        <Setter Property="Cursor" Value="SizeAll"></Setter>
-        
         <Setter Property="LayoutTransform">
             <Setter.Value>
                 <ScaleTransform ScaleX="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ScaleTransform>
