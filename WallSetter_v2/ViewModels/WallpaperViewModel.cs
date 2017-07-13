@@ -110,6 +110,15 @@ namespace WallSetter_v2.ViewModels
             OnCoordinateChanged();
         }
 
+        public void SetDefaultSize(double top, double left)
+        {
+            Width = WallpaperModel.Width;
+            Height = WallpaperModel.Height;
+            TopCoordinate = top;
+            LeftCoordinate = left;
+            UpdateCoordinates();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler CoordinateChanged;
 

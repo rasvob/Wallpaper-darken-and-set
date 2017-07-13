@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -254,6 +255,17 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
+        public string SetWallpaperTooltipError
+        {
+            get => _setWallpaperTooltipError;
+            set
+            {
+                if (value == _setWallpaperTooltipError) return;
+                _setWallpaperTooltipError = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _useCustomSize;
         private int _height;
         private int _width;
@@ -262,7 +274,7 @@ namespace WallSetter_v2.ViewModels
         private ObservableCollection<int> _widthItemSource = new ObservableCollection<int>();
         private ObservableCollection<int> _heightItemSource = new ObservableCollection<int>();
 
-        private readonly int[] _widthArray = { 1280, 1366, 1440, 1600, 1680, 1920, 2560, 3840, 5760, 3840, 5120 };
+        private readonly int[] _widthArray = { 1280, 1366, 1440, 1600, 1680, 1920, 2560, 3840, 5760, 5120 };
         private readonly int[] _heightArray = { 768, 800, 900, 960, 1024, 1200, 1050, 1080, 1440, 1600, 2160, 2880 };
         private double _top;
         private double _left;
@@ -277,12 +289,15 @@ namespace WallSetter_v2.ViewModels
         private double _verticalScrollOffset;
         private double _viewportHeight;
         private double _viewportWidth;
+        private string _setWallpaperTooltipError = String.Empty;
 
         public ICommand SetWallpaperCommand { get; }
         public ICommand LoadFromFileCommand { get; }
         public ICommand DownloadFromWallhavenCommand { get; }
         public ICommand DownloadFromUnsplashCommand { get; }
         public ICommand DownloadFromLinkCommand { get; }
+        public ICommand SetDefaultSizesCommand { get; set; }
+        public ICommand SetCurrentScreenSizeCommand { get; set; }
 
         public WallpaperViewModel WallpaperViewModel
         {
@@ -323,12 +338,47 @@ namespace WallSetter_v2.ViewModels
             DownloadFromWallhavenCommand = new SimpleCommand(DownloadFromWallhavenExecute);
             DownloadFromUnsplashCommand = new SimpleCommand(DownloadFromUnsplashExecute);
             DownloadFromLinkCommand = new SimpleCommand(DownloadFromLinkExecute);
+            SetDefaultSizesCommand = new SimpleCommand(SetDefaultSizesCommandExecute, SetDefaultSizesCommandCanExecute);
+            SetCurrentScreenSizeCommand = new SimpleCommand(SetCurrentScreenSizeCommandExecute, SetCurrentScreenSizeCommandCanExecute);
 
             FillOpacityItemSource();
             RefreshHeightSource(int.MaxValue);
             RefreshWidthSource(int.MaxValue);
 
             WallpaperViewModel.IsVisible = Visibility.Hidden;
+        }
+
+        private bool SetCurrentScreenSizeCommandCanExecute(object o)
+        {
+            return WallpaperViewModel.WallpaperModel.Path != null;
+        }
+
+        private void SetCurrentScreenSizeCommandExecute(object o)
+        {
+            if (CanvasWidth <= SystemParameters.VirtualScreenWidth)
+            {
+                CanvasWidth = SystemParameters.VirtualScreenWidth * 2;
+            }
+
+            if (CanvasHeight <= SystemParameters.VirtualScreenHeight)
+            {
+                CanvasHeight = SystemParameters.VirtualScreenHeight * 2;
+            }
+
+            UseCustomSize = true;
+            Width = (int) SystemParameters.VirtualScreenWidth;
+            Height = (int) SystemParameters.VirtualScreenHeight;
+        }
+
+        private bool SetDefaultSizesCommandCanExecute(object o)
+        {
+            return WallpaperViewModel.WallpaperModel.Path != null;
+        }
+
+        private void SetDefaultSizesCommandExecute(object o)
+        {
+            UseCustomSize = false;
+            WallpaperViewModel.SetDefaultSize((CanvasHeight - WallpaperViewModel.WallpaperModel.Height)/2, (CanvasWidth - WallpaperViewModel.WallpaperModel.Width)/2);
         }
 
         private void DownloadFromLinkExecute(object o)
@@ -387,12 +437,30 @@ namespace WallSetter_v2.ViewModels
 
         private bool SetWallpaperCanExecute(object _)
         {
+            SetWallpaperTooltipError = string.Empty;
+
             if (this[nameof(Width)] != string.Empty || this[nameof(Height)] != string.Empty)
             {
                 return false;
             }
 
-            return SelectedStyle != null;
+            if (WallpaperViewModel.WallpaperModel.Path == null)
+            {
+                return false;
+            }
+
+            if (SelectedStyle == null)
+            {
+                return false;
+            }
+
+            if (!IsWallpaperSetupOkay())
+            {
+                SetWallpaperTooltipError = "Wallpaper doesn't fit the desired dimensions";
+                return false;
+            }
+
+            return true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -403,6 +471,13 @@ namespace WallSetter_v2.ViewModels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private bool IsWallpaperSetupOkay()
+        {
+            Rectangle coverSize = new Rectangle((int) Left, (int) Top, Width, Height);
+            Rectangle imgSize = new Rectangle((int) WallpaperViewModel.LeftCoordinate, (int)WallpaperViewModel.TopCoordinate, (int) WallpaperViewModel.Width, (int) WallpaperViewModel.Height);
+            return imgSize.Contains(coverSize);
         }
 
         private void FillOpacityItemSource()

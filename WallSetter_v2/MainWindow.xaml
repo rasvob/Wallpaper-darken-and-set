@@ -64,16 +64,29 @@
 
                             </TextBlock>
                         </StackPanel>
-                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                x:Name="MiniSetDefaultButton"
-                                Margin="0 0 0 0" 
-                                Width="20"
-                                Height="20"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                ToolTip="Set default size">
-                            <materialDesign:PackIcon Kind="Autorenew" Height="14" Width="14"/>
-                        </Button>
+
+                        <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                    Margin="0 0 0 0"
+                                    Width="20"
+                                    Height="20"
+                                    ToolTip="Set default size"
+                                    Command="{Binding SetCurrentScreenSizeCommand}">
+                                <materialDesign:PackIcon Kind="Airplay" />
+                            </Button>
+
+                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                    x:Name="MiniSetDefaultButton"
+                                    Margin="10 0 0 0"
+                                    Width="20"
+                                    Height="20"
+                                    ToolTip="Set current screen size"
+                                    Command="{Binding SetDefaultSizesCommand}">
+                                <materialDesign:PackIcon Kind="Autorenew" Height="14" Width="14" />
+                            </Button>
+                        </StackPanel>
                     </Grid>
 
                     <Grid>
@@ -157,11 +170,17 @@
                 </StackPanel>
 
                 <!--SetWall-->
-                <Button Grid.Row="2" 
-                        Style="{StaticResource MaterialDesignRaisedButton}" 
-                        Margin="15" Content="Set as wallpaper"
-                        Command="{Binding SetWallpaperCommand}">
-                </Button>
+                <StackPanel Grid.Row="2" Margin="15">
+                    <TextBlock Text="{Binding SetWallpaperTooltipError, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Crimson" FontWeight="Regular" FontSize="12"></TextBlock>
+                    <Button 
+                            Style="{StaticResource MaterialDesignRaisedButton}" 
+                             Content="Set as wallpaper"
+                            Command="{Binding SetWallpaperCommand}"
+                    >
+                    </Button>
+                </StackPanel>
+                
+                
             </Grid>
 
             <Grid Grid.Column="1">
@@ -244,6 +263,18 @@
         </Grid>
     </Grid>
 </Window>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
