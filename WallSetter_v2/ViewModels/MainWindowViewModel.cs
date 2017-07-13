@@ -5,11 +5,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using WallSetter_v2.Annotations;
 using WallSetter_v2.Commands;
+using WallSetter_v2.EventArgsCustom;
 using WallSetter_v2.Services;
 using Size = System.Drawing.Size;
 using Style = WallpaperManipulator.Style;
@@ -19,6 +21,50 @@ namespace WallSetter_v2.ViewModels
     public class MainWindowViewModel: INotifyPropertyChanged, IDataErrorInfo
     {
         private readonly IOpenFileService _openFileService;
+
+        public double HorizontalScrollOffset
+        {
+            get => _horizontalScrollOffset;
+            set
+            {
+                if (value.Equals(_horizontalScrollOffset)) return;
+                _horizontalScrollOffset = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double VerticalScrollOffset
+        {
+            get => _verticalScrollOffset;
+            set
+            {
+                if (value.Equals(_verticalScrollOffset)) return;
+                _verticalScrollOffset = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double ViewportHeight
+        {
+            get => _viewportHeight;
+            set
+            {
+                if (value.Equals(_viewportHeight)) return;
+                _viewportHeight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double ViewportWidth
+        {
+            get => _viewportWidth;
+            set
+            {
+                if (value.Equals(_viewportWidth)) return;
+                _viewportWidth = value;
+                OnPropertyChanged();
+            }
+        }
 
         public double CanvasWidth
         {
@@ -184,9 +230,16 @@ namespace WallSetter_v2.ViewModels
             set
             {
                 if (value.Equals(_scale)) return;
+
+                var args = new ScaleEventArgs()
+                {
+                    OldScale = _scale, OldHorizontalOffset = HorizontalScrollOffset, OldVerticalOffset = VerticalScrollOffset, OldViewportHeight = ViewportHeight, OldViewportWidth =  ViewportWidth
+                };
+
                 _scale = value;
                 WallpaperViewModel.Scale = 1.0 / value;
                 OnPropertyChanged();
+                OnScaleChanged(args);
             }
         }
 
@@ -215,11 +268,15 @@ namespace WallSetter_v2.ViewModels
         private double _left;
         private ObservableCollection<string> _wallpaperStyleItemSource = new ObservableCollection<string>() { "Tiled", "Centered", "Stretched" };
         private string _selectedStyle;
-        private double _scale = 1;
+        private double _scale = 0.25;
         private ISnackbarMessageQueue _messageQueue;
         private WallpaperViewModel _wallpaperViewModel = new WallpaperViewModel();
         private double _canvasWidth;
         private double _canvasHeight;
+        private double _horizontalScrollOffset;
+        private double _verticalScrollOffset;
+        private double _viewportHeight;
+        private double _viewportWidth;
 
         public ICommand SetWallpaperCommand { get; }
         public ICommand LoadFromFileCommand { get; }
@@ -325,7 +382,7 @@ namespace WallSetter_v2.ViewModels
 
         private void SetWallpaperExecute(object _)
         {
-            Debug.WriteLine(WallpaperStyle);
+           
         }
 
         private bool SetWallpaperCanExecute(object _)
@@ -335,16 +392,12 @@ namespace WallSetter_v2.ViewModels
                 return false;
             }
 
-            if (SelectedStyle == null)
-            {
-                return false;
-            }
-
-            return true;
+            return SelectedStyle != null;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public event EventHandler WallpaperLoaded;
+        public event EventHandler<ScaleEventArgs> ScaleChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -410,6 +463,11 @@ namespace WallSetter_v2.ViewModels
         protected virtual void OnWallpaperLoaded()
         {
             WallpaperLoaded?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnScaleChanged(ScaleEventArgs e)
+        {
+            ScaleChanged?.Invoke(this, e);
         }
     }
 }

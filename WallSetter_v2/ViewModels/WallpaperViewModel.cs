@@ -14,7 +14,7 @@ namespace WallSetter_v2.ViewModels
     {
         private double _width;
         private double _height;
-        private double _scale = 1;
+        private double _scale = 4;
         private WallpaperModel _wallpaperModel = new WallpaperModel();
         private double _topCoordinate;
         private double _leftCoordinate;
@@ -86,7 +86,6 @@ namespace WallSetter_v2.ViewModels
                 if (value.Equals(_width)) return;
                 _width = value;
                 OnPropertyChanged();
-                Debug.WriteLine(Width / Height);
             }
         }
 

@@ -1,5 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using WallSetter_v2.EventArgsCustom;
 using WallSetter_v2.Services;
 using WallSetter_v2.ViewModels;
 
@@ -16,8 +20,34 @@ namespace WallSetter_v2
         {
             InitializeComponent();
             ViewModel = new MainWindowViewModel(new OpenFileFromDialog());
+            ViewModel.ScaleChanged += ViewModelOnScaleChanged;
             WallpaperControl.ViewModel = ViewModel.WallpaperViewModel;
             DataContext = ViewModel;
+        }
+
+        private void ViewModelOnScaleChanged(object sender, ScaleEventArgs args)
+        {
+            double contentHorizontalMiddle = (args.OldHorizontalOffset + args.OldViewportWidth / 2) / args.OldScale;
+            double contentVerticalMiddle = (args.OldVerticalOffset + args.OldViewportHeight / 2) / args.OldScale;
+
+            if ((int)ScrollViewer.ScrollableWidth == 0)
+            {
+                contentHorizontalMiddle = ViewModel.CanvasWidth / 2;
+            }
+
+            if ((int)ScrollViewer.ScrollableHeight == 0)
+            {
+                contentVerticalMiddle = ViewModel.CanvasHeight / 2;
+            }
+
+            double newContentHorizontalOffset = contentHorizontalMiddle - (ViewModel.ViewportWidth / 2) / ViewModel.Scale;
+            double newContentVerticalOffset = contentVerticalMiddle - (ViewModel.ViewportHeight / 2) / ViewModel.Scale;
+
+            double newHorizontalOffset = newContentHorizontalOffset * ViewModel.Scale;
+            double newVerticalOffset = newContentVerticalOffset * ViewModel.Scale;
+
+            ScrollViewer.ScrollToHorizontalOffset(newHorizontalOffset);
+            ScrollViewer.ScrollToVerticalOffset(newVerticalOffset);
         }
 
         private void ScrollViewer_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -30,13 +60,26 @@ namespace WallSetter_v2
             else if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
             {
                 double ns = (e.Delta > 0 ? 0.05 : -0.05) + ViewModel.Scale;
-                if (ns <= 0 || ns >= 2)
+                if (ns <= 0.05 || ns >= 1.25)
                 {
                     ns = ViewModel.Scale;
                 }
                 ViewModel.Scale = ns;
                 e.Handled = true;
             }
+        }
+
+        private void ScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            //if (e.ExtentWidth < ViewModel.CanvasWidth * ViewModel.Scale || e.ExtentHeight < ViewModel.CanvasHeight * ViewModel.Scale)
+            //{
+            //    return;
+            //}
+
+            ViewModel.ViewportHeight = e.ViewportHeight;
+            ViewModel.ViewportWidth = e.ViewportWidth;
+            ViewModel.HorizontalScrollOffset = e.HorizontalOffset;
+            ViewModel.VerticalScrollOffset = e.VerticalOffset;
         }
     }
 }

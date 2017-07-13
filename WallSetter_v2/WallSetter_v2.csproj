@@ -65,7 +65,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ValueConverters\BorderThicknessValueConverter.cs" />
+    <Compile Include="ValueConverters\DoubleFloorValueConverter.cs" />
     <Compile Include="ValueConverters\ScaleValueConverter.cs" />
+    <Compile Include="EventArgsCustom\ScaleEventArgs.cs" />
     <Compile Include="ViewModels\WallpaperViewModel.cs" />
     <Compile Include="WallpaperControl\WallpaperControl.xaml.cs">
       <DependentUpon>WallpaperControl.xaml</DependentUpon>
