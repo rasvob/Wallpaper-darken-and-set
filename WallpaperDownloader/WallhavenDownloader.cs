@@ -1,16 +1,20 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Net;
 using HtmlAgilityPack;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Text.RegularExpressions;
 
 namespace WallpaperDownloader
 {
     public class WallhavenDownloader: IWallpaperDownloader
     {
         public string Url { get; set; }
+
+        public static readonly string RegExString = @"https:\/\/alpha\.wallhaven\.cc\/wallpaper\/\d+";
 
         public WallhavenDownloader(string url)
         {
@@ -19,28 +23,15 @@ namespace WallpaperDownloader
 
         public bool IsLinkValid()
         {
-            return true;
+            return new Regex(RegExString).IsMatch(Url);
         }
 
         public string DownloadWallpaper()
         {
-            var url = GetImageUrl();
-            string fileName;
-            using (WebClient wc = new WebClient())
-            {
-                byte[] data = wc.DownloadData(url);
-
-                using (MemoryStream memoryStream = new MemoryStream(data))
-                {
-                    using (var img = Image.FromStream(memoryStream))
-                    {
-                        fileName = Path.GetTempFileName();
-                        fileName = fileName + ".png";
-                        img.Save(fileName, ImageFormat.Png);
-                    }
-                }
-            }
-            return fileName;
+            string url = GetImageUrl();
+            IWallpaperDownloader downloader = new CommonDownloader(url);
+            string wallpaper = downloader.DownloadWallpaper();
+            return wallpaper;
         }
 
         private string GetImageUrl()

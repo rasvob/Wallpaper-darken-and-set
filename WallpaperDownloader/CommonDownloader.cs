@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Net;
 
 namespace WallpaperDownloader
 {
@@ -13,12 +16,32 @@ namespace WallpaperDownloader
 
         public bool IsLinkValid()
         {
-            throw new System.NotImplementedException();
+            return true;
         }
 
         public string DownloadWallpaper()
         {
-            throw new System.NotImplementedException();
+            return DownloadWallpaper(Url);
+        }
+
+        public string DownloadWallpaper(string url)
+        {
+            string fileName;
+            using (WebClient wc = new WebClient())
+            {
+                byte[] data = wc.DownloadData(url);
+
+                using (MemoryStream memoryStream = new MemoryStream(data))
+                {
+                    using (var img = Image.FromStream(memoryStream))
+                    {
+                        fileName = Path.GetTempFileName();
+                        fileName = fileName + ".png";
+                        img.Save(fileName, ImageFormat.Png);
+                    }
+                }
+            }
+            return fileName;
         }
     }
 }

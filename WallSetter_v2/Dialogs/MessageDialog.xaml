@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="WallSetter_v2.Dialogs.MessageDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WallSetter_v2.Dialogs"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Text="{Binding DialogTitle, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                   Grid.Row="0"
+                   Style="{StaticResource MaterialDesignTitleTextBlock}"/>
+
+        <TextBlock Text="{Binding Message, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                   Grid.Row="1" VerticalAlignment="Center" />
+
+        <Button IsCancel="True" Style="{DynamicResource MaterialDesignFlatButton}"
+                Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                Content="Close"
+                Grid.Row="2"
+                HorizontalAlignment="Right"
+                >
+            <Button.CommandParameter>
+                <system:Boolean>True</system:Boolean>
+            </Button.CommandParameter>
+        </Button>
+    </Grid>
+</UserControl>

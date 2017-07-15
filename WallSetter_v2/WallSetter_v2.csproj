@@ -65,6 +65,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\DialogHelper.cs" />
+    <Compile Include="Dialogs\DownloadLinkDialog\DownloadDialog.xaml.cs">
+      <DependentUpon>DownloadDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\MessageDialog.xaml.cs">
+      <DependentUpon>MessageDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\ProgressDialog.xaml.cs">
+      <DependentUpon>ProgressDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Validation\NotEmptyValidationRule.cs" />
+    <Compile Include="ViewModels\CommonDialogViewModel.cs" />
+    <Compile Include="ViewModels\DownloadDialogViewModel.cs" />
     <Compile Include="ValueConverters\BorderThicknessValueConverter.cs" />
     <Compile Include="ValueConverters\DoubleFloorValueConverter.cs" />
     <Compile Include="ValueConverters\ScaleValueConverter.cs" />
@@ -73,6 +86,18 @@
     <Compile Include="WallpaperControl\WallpaperControl.xaml.cs">
       <DependentUpon>WallpaperControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="Dialogs\DownloadLinkDialog\DownloadDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\MessageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\ProgressDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -148,6 +173,14 @@
       <Project>{f72af0d1-07f6-413b-bbba-20ae9584782b}</Project>
       <Name>WallpaperManipulator</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\favicon-eercast.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\favicon-photo.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

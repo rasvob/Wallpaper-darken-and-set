@@ -10,8 +10,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
+using WallpaperDownloader;
 using WallSetter_v2.Annotations;
 using WallSetter_v2.Commands;
+using WallSetter_v2.Dialogs;
+using WallSetter_v2.Dialogs.DownloadLinkDialog;
 using WallSetter_v2.EventArgsCustom;
 using WallSetter_v2.Services;
 using Size = System.Drawing.Size;
@@ -381,19 +384,60 @@ namespace WallSetter_v2.ViewModels
             WallpaperViewModel.SetDefaultSize((CanvasHeight - WallpaperViewModel.WallpaperModel.Height)/2, (CanvasWidth - WallpaperViewModel.WallpaperModel.Width)/2);
         }
 
-        private void DownloadFromLinkExecute(object o)
+        private async void DownloadFromLinkExecute(object o)
         {
             
         }
 
-        private void DownloadFromUnsplashExecute(object o)
+        private async void DownloadFromUnsplashExecute(object o)
         {
-
+            
         }
 
-        private void DownloadFromWallhavenExecute(object o)
+        private async void DownloadFromWallhavenExecute(object o)
         {
+            await DownloadWithDialog("Download from Wallhaven.cc", DownloaderType.Wallhaven);
+            Debug.WriteLine(WallpaperViewModel.WallpaperModel.Path);
+        }
 
+        private async Task DownloadWithDialog(string title, DownloaderType downloaderType)
+        {
+            DownloadDialogViewModel dialogViewModel = new DownloadDialogViewModel()
+            {
+                DialogTitle = title
+            };
+
+            var dialog = new DownloadDialog()
+            {
+                DataContext = dialogViewModel
+            };
+
+            var res = await DialogHost.Show(dialog, "RootDialog");
+
+            if ((bool)res)
+            {
+                string err = null;
+                await Task.Factory.StartNew(
+                    () =>
+                    {
+                        try
+                        {
+                            WallpaperViewModel.WallpaperModel.DownloadWallpaper(downloaderType,
+                                dialogViewModel.Link);
+
+                            //TODO: Progress
+                        }
+                        catch (Exception e)
+                        {
+                            err = e.Message;
+                        }
+                    });
+
+                if (err != null)
+                {
+                    await DialogHelper.ShowMessage("Error occurred", err, "RootDialog");
+                }
+            }
         }
 
         private void LoadFromFileExecute(object _)
