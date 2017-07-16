@@ -17,7 +17,9 @@ namespace WallSetter_v2.Models
         public int Width { get; set; }
         public int Height { get; set; }
         public double Ratio => (double)Width / Height;
-        
+
+        public Size OriginalSize => new Size(Width, Height);
+
         public string Path
         {
             get => _path;

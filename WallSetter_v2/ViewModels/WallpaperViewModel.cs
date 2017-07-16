@@ -1,12 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Media.Imaging;
 using WallSetter_v2.Annotations;
 using WallSetter_v2.Models;
-using WallSetter_v2.ValueConverters;
 
 namespace WallSetter_v2.ViewModels
 {
@@ -115,10 +112,7 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
-        public WallpaperViewModel()
-        {
-
-        }
+        public System.Drawing.Size NewSize => new System.Drawing.Size((int) Width, (int) Height);
 
         public void UpdateCoordinates()
         {

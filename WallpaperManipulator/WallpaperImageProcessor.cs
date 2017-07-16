@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using ImageProcessor;
 using ImageProcessor.Imaging;
 using ImageProcessor.Imaging.Formats;
@@ -9,54 +12,63 @@ namespace WallpaperManipulator
 {
     public class WallpaperImageProcessor: IDisposable
     {
-        private string _file;
-        public void ProcessImage(MemoryStream inStream, ISupportedImageFormat format, int width, int height, int percent, MemoryStream outStream)
+        public MemoryStream Stream { get; set; } = new MemoryStream();
+        public void ProcessImage(MemoryStream inputImage, Size oldSize, Size newSize, Rectangle cropArea, int coverOpacity = 0)
         {
-            Bitmap cover = CreateBlackOverlay(width, height);
-            ImageLayer imgLayer = new ImageLayer
+            Bitmap overlay = CreateBlackOverlay(newSize.Width, newSize.Width);
+            ImageLayer imageLayer = new ImageLayer()
             {
-                Image = cover,
-                Opacity = percent,
-                Size = new Size(width, height)
+                Image = overlay,
+                Opacity = coverOpacity,
+                Size = newSize
             };
-            using (ImageFactory imageFactory = new ImageFactory(true))
+
+            using (ImageFactory imageFactory = new ImageFactory())
             {
-                imageFactory.Load(inStream)
-                    .Overlay(imgLayer)
-                    .Format(format)
-                    .Save(outStream);
+                MemoryStream res = new MemoryStream();
+
+                imageFactory.Load(inputImage)
+                    .Resize(newSize)
+                    .Crop(cropArea)
+                    .Overlay(imageLayer)
+                    .Format(new PngFormat {Quality = 100})
+                    .Quality(100)
+                    .Save(Stream);
             }
         }
 
-        public void SaveFile(string path, MemoryStream outStream)
+        public void SaveFile(string fileName, ImageFormat format)
         {
-            _file = path;
-            using (FileStream fileStream = File.Create(path))
+            Stream.Seek(0, SeekOrigin.Begin);
+            using (var img = Image.FromStream(Stream))
             {
-                outStream.Seek(0, SeekOrigin.Begin);
-                outStream.CopyTo(fileStream);
+                img.Save(fileName, format);
             }
+        }
+
+        public string SaveFileToTemp()
+        {
+            string fileName = Path.GetTempFileName() + ".png";
+            SaveFile(fileName, ImageFormat.Png);
+            return fileName;
         }
 
         private Bitmap CreateBlackOverlay(int width, int height)
         {
             Bitmap res = new Bitmap(width, height);
-            for (int i = 0; i < res.Width; i++)
+            Parallel.For(0, width * height, i =>
             {
-                for (int j = 0; j < res.Height; j++)
+                lock (res)
                 {
-                    res.SetPixel(i, j, Color.Black);
+                    res.SetPixel(i%width, i/height, Color.Black);
                 }
-            }
+            });
             return res;
         }
 
         public void Dispose()
         {
-            if (File.Exists(_file))
-            {
-                File.Delete(_file);
-            }
+            Stream.Close();
         }
     }
 }

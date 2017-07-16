@@ -76,33 +76,7 @@ namespace WallpaperManipulator
 
         public void SetDesktopWallpaper(int opacity)
         {
-            if (PathToWallpaper == null)
-            {
-                Debug.WriteLine("Null path");
-                return;
-            }
-
-            int width, height;
-            using (Image temp = Image.FromFile(PathToWallpaper))
-            {
-                width = temp.Width;
-                height = temp.Height;
-            }
-
-            byte[] photoBytes = File.ReadAllBytes(PathToWallpaper);
-            ISupportedImageFormat format = new PngFormat {Quality = 100};
-            using (MemoryStream inStream = new MemoryStream(photoBytes))
-            {
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    using (WallpaperImageProcessor processor = new WallpaperImageProcessor())
-                    {
-                        processor.ProcessImage(inStream, format, width, height, opacity, outStream);
-                        processor.SaveFile(ProcessedImageName, outStream);
-                        SetDesktopWallpaperFromProcessed();
-                    }
-                }
-            }
+            
         }
     }
 }

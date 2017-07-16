@@ -220,10 +220,11 @@
                 <StackPanel Grid.Row="2" Margin="15">
                     <TextBlock Text="{Binding SetWallpaperTooltipError, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Crimson" FontWeight="Regular" FontSize="12"></TextBlock>
                     <Button 
-                                    Style="{StaticResource MaterialDesignRaisedButton}" 
-                                     Content="Set as current wallpaper (Alt + Enter)"
-                                    Command="{Binding SetWallpaperCommand}"
-                                    />
+                        Style="{StaticResource MaterialDesignRaisedButton}" 
+                        Content="Set as current wallpaper"
+                        ToolTip="Set as current wallpaper (Alt + Enter)"
+                        Command="{Binding SetWallpaperCommand}"
+                    />
                 </StackPanel>
             </Grid>
 

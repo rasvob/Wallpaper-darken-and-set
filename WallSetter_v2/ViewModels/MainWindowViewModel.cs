@@ -336,6 +336,17 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
+        public Rectangle CropArea
+        {
+            get
+            {
+                Rectangle overlayArea = new Rectangle((int)Left, (int)Top, Width, Height);
+                Rectangle imageAre = new Rectangle((int) WallpaperViewModel.LeftCoordinate, (int) WallpaperViewModel.TopCoordinate, (int) WallpaperViewModel.Width, (int) WallpaperViewModel.Height);
+                Rectangle intersect = Rectangle.Intersect(imageAre, overlayArea);
+                return intersect;
+            }
+        }
+
         public MainWindowViewModel(IOpenFileService openFileService)
         {
             _openFileService = openFileService;
@@ -474,6 +485,7 @@ namespace WallSetter_v2.ViewModels
                 }
 
                 LoadFile(WallpaperViewModel.WallpaperModel.Path);
+                MessageQueue.Enqueue($"{dialogViewModel.Link} loaded", "Hide", () => { });
             }
         }
 
@@ -511,7 +523,11 @@ namespace WallSetter_v2.ViewModels
 
         private void SetWallpaperExecute(object _)
         {
-           
+            using (var processor = new WallpaperImageProcessor())
+            {
+                processor.ProcessImage(WallpaperViewModel.WallpaperModel.Stream, WallpaperViewModel.WallpaperModel.OriginalSize, WallpaperViewModel.NewSize, CropArea);
+                string tempFileName = processor.SaveFileToTemp();
+            }
         }
 
         private bool SetWallpaperCanExecute(object _)
