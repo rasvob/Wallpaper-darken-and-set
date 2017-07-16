@@ -24,7 +24,7 @@ namespace WallpaperDownloader
             var web = new HtmlWeb();
             var doc = web.Load(Url);
             HtmlNode node = doc.DocumentNode.SelectSingleNode("//img[@id='wallpaper']");
-            HtmlAttribute attribute = node != null ? node.Attributes["src"] : throw new ApplicationException("Unable to obtain image url, please use a direct link instead");
+            HtmlAttribute attribute = node != null ? node.Attributes["src"] : throw new ApplicationException(UnableToObtainLinkError);
             string imageUrl = "http:" + attribute.Value;
             return imageUrl;
         }

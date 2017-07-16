@@ -8,13 +8,12 @@ namespace WallSetter_v2.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double scale = (double) value;
-            return 1.0 / scale;
+            return (int)((double)value * 100);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return (double)((double)value / 100.0);
         }
     }
 }

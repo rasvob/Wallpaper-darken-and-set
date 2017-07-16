@@ -13,8 +13,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ResizeThumb.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
-
-            <valueConverters:ScaleValueConverter x:Key="ScaleValueConverter"></valueConverters:ScaleValueConverter>
         </ResourceDictionary>
     </UserControl.Resources>
 

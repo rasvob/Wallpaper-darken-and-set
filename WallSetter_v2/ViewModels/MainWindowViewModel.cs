@@ -171,11 +171,7 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
-        private void CenterCover()
-        {
-            Top = (CanvasHeight - Height) / 2;
-            Left = (CanvasWidth - Width) / 2;
-        }
+        
 
         public int Width
         {
@@ -302,6 +298,11 @@ namespace WallSetter_v2.ViewModels
         public ICommand DownloadFromLinkCommand { get; }
         public ICommand SetDefaultSizesCommand { get; set; }
         public ICommand SetCurrentScreenSizeCommand { get; set; }
+        public ICommand DoubleCanvasSizeCommand { get; set; }
+
+        public static readonly double MinScale = 0.05;
+        public static readonly double MaxScale = 1.25;
+
 
         public WallpaperViewModel WallpaperViewModel
         {
@@ -344,12 +345,20 @@ namespace WallSetter_v2.ViewModels
             DownloadFromLinkCommand = new SimpleCommand(DownloadFromLinkExecute);
             SetDefaultSizesCommand = new SimpleCommand(SetDefaultSizesCommandExecute, SetDefaultSizesCommandCanExecute);
             SetCurrentScreenSizeCommand = new SimpleCommand(SetCurrentScreenSizeCommandExecute, SetCurrentScreenSizeCommandCanExecute);
+            DoubleCanvasSizeCommand = new SimpleCommand(DoubleCanvasSizeCommandExecute);
 
             FillOpacityItemSource();
             RefreshHeightSource(int.MaxValue);
             RefreshWidthSource(int.MaxValue);
 
             WallpaperViewModel.IsVisible = Visibility.Hidden;
+        }
+
+        private void DoubleCanvasSizeCommandExecute(object o)
+        {
+            CanvasWidth *= 2;
+            CanvasHeight *= 2;
+            CenterCover();
         }
 
         private bool SetCurrentScreenSizeCommandCanExecute(object o)
@@ -387,17 +396,17 @@ namespace WallSetter_v2.ViewModels
 
         private async void DownloadFromLinkExecute(object o)
         {
-            
+            await DownloadWithDialog("Download from unsplash.com", DownloaderType.Link);
         }
 
         private async void DownloadFromUnsplashExecute(object o)
         {
-            
+            await DownloadWithDialog("Download from unsplash.com", DownloaderType.Unsplash);
         }
 
         private async void DownloadFromWallhavenExecute(object o)
         {
-            await DownloadWithDialog("Download from Wallhaven.cc", DownloaderType.Wallhaven);
+            await DownloadWithDialog("Download from wallhaven.cc", DownloaderType.Wallhaven);
         }
 
         private async Task DownloadWithDialog(string title, DownloaderType downloaderType)
@@ -593,6 +602,12 @@ namespace WallSetter_v2.ViewModels
         protected virtual void OnScaleChanged(ScaleEventArgs e)
         {
             ScaleChanged?.Invoke(this, e);
+        }
+
+        private void CenterCover()
+        {
+            Top = (CanvasHeight - Height) / 2;
+            Left = (CanvasWidth - Width) / 2;
         }
     }
 }

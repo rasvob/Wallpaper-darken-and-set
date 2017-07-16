@@ -60,7 +60,7 @@ namespace WallSetter_v2
             else if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
             {
                 double ns = (e.Delta > 0 ? 0.05 : -0.05) + ViewModel.Scale;
-                if (ns <= 0.05 || ns >= 1.25)
+                if (ns <= MainWindowViewModel.MinScale || ns >= MainWindowViewModel.MaxScale)
                 {
                     ns = ViewModel.Scale;
                 }

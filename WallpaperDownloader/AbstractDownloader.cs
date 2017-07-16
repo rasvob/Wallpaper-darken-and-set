@@ -6,6 +6,8 @@
         public abstract bool IsLinkValid();
         public abstract string GetImageUrl();
 
+        protected static readonly string UnableToObtainLinkError = "Unable to obtain image url, please use a direct link instead";
+
         protected AbstractDownloader(string url)
         {
             Url = url;
