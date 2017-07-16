@@ -1,56 +1,46 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 
 namespace WallpaperManipulator
 {
-	public class OriginalWallpaperGetter: IDisposable
+	public class OriginalWallpaperGetter
 	{
 		private readonly string _postfix = @"Microsoft\Windows\Themes\CachedFiles";
 		private readonly string _postfixTranscoded = @"Microsoft\Windows\Themes\";
 		private readonly string _pathToDirectory;
 		private readonly string _pathToDirectoryTranscoded;
-		private string _fileName;
 
-		public OriginalWallpaperGetter()
+	    public OriginalWallpaperGetter()
 		{
 			_pathToDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _postfix);
 			_pathToDirectoryTranscoded = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), _postfixTranscoded);
 		}
 
-	    public void Dispose()
-	    {
-	        if (File.Exists(_fileName))
-	        {
-	            File.Delete(_fileName);
-	        }
-        }
-
 	    public string GetOriginalWallpaper()
-		{
-			try
-			{
-				var file = Directory.GetFiles(_pathToDirectory).FirstOrDefault();
-			    string fileName = string.Empty;
-			    fileName = new FileInfo(file).Name;
-			    File.Copy(file, fileName);
-			    _fileName = fileName;
-			    return fileName;
-			}
-			catch (Exception e)
-			{
-				Debug.WriteLine(e.Message);
-				var file = Directory.GetFiles(_pathToDirectoryTranscoded).FirstOrDefault(t => t.Contains("TranscodedWallpaper"));
-			    string fileName = string.Empty;
-                if (file != null)
-				{
-				    fileName = new FileInfo(file).Name + ".jpg";
-				    File.Copy(file, fileName);
-				    _fileName = fileName;
+	    {
+	        string file;
+            try
+		    {
+		        file = Directory.GetFiles(_pathToDirectory).FirstOrDefault();
+            }
+            catch (DirectoryNotFoundException)
+		    {
+                file = Directory.GetFiles(_pathToDirectoryTranscoded).FirstOrDefault(t => t.Contains("TranscodedWallpaper"));
+            }
+
+	        using (FileStream stream = File.OpenRead(file))
+	        {
+	            using (var img = Image.FromStream(stream))
+	            {
+	                string fileName = Path.GetTempFileName() + ".png";
+	                img.Save(fileName, ImageFormat.Png);
+	                return fileName;
                 }
-			    return fileName;
-			}
+            }
 		}
 	}
 }

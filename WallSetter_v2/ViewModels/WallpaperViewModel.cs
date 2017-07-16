@@ -86,6 +86,7 @@ namespace WallSetter_v2.ViewModels
                 if (value.Equals(_width)) return;
                 _width = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(NewSizeInPercent));
             }
         }
 
@@ -97,6 +98,20 @@ namespace WallSetter_v2.ViewModels
                 if (value.Equals(_height)) return;
                 _height = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public string NewSizeInPercent
+        {
+            get
+            {
+                if (WallpaperModel.Width == 0)
+                {
+                    return string.Empty;
+                }
+                double val = Width * 100.0 / WallpaperModel.Width;
+                var formattable = $"({(int)val} %)";
+                return formattable;
             }
         }
 

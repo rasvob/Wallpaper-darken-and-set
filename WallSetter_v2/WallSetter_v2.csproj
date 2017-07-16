@@ -76,6 +76,7 @@
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Validation\NotEmptyValidationRule.cs" />
+    <Compile Include="ValueConverters\PathToEnabledValueConverter.cs" />
     <Compile Include="ViewModels\CommonDialogViewModel.cs" />
     <Compile Include="ViewModels\DownloadDialogViewModel.cs" />
     <Compile Include="ValueConverters\BorderThicknessValueConverter.cs" />

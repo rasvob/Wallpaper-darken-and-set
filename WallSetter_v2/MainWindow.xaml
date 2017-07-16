@@ -16,6 +16,7 @@
         FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
         Icon="Resources/favicon-photo.ico"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
+        Loaded="MainWindow_OnLoaded"
         Title="Wallpaper setter" Height="800" Width="1100">
     <Window.Resources>
         <ResourceDictionary>
@@ -29,10 +30,25 @@
             <valueConverters:BorderThicknessValueConverter x:Key="BorderThicknessValueConverter"></valueConverters:BorderThicknessValueConverter>
             <valueConverters:DoubleFloorValueConverter x:Key="DoubleFloorValueConverter"></valueConverters:DoubleFloorValueConverter>
             <valueConverters:ScaleValueConverter x:Key="ScaleValueConverter"></valueConverters:ScaleValueConverter>
+            <valueConverters:PathToEnabledValueConverter x:Key="PathToEnabledValueConverter"></valueConverters:PathToEnabledValueConverter>
             
             <SolidColorBrush Opacity="0.45" Color="#673ab7" x:Key="BorderSolidColorBrush"></SolidColorBrush>
         </ResourceDictionary>
     </Window.Resources>
+    
+    <!--Key binding-->
+    <Window.InputBindings>
+        <KeyBinding Key="NumPad0" Modifiers="Control" Command="{Binding SetMinimalScaleCommand}"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SetCurrentScreenSizeCommand}"></KeyBinding>
+        <KeyBinding Key="D" Modifiers="Control" Command="{Binding SetDefaultSizesCommand}"></KeyBinding>
+
+        <KeyBinding Key="O" Modifiers="Control" Command="{Binding LoadFromFileCommand}"></KeyBinding>
+        <KeyBinding Key="W" Modifiers="Alt" Command="{Binding DownloadFromWallhavenCommand}"></KeyBinding>
+        <KeyBinding Key="U" Modifiers="Alt" Command="{Binding DownloadFromUnsplashCommand}"></KeyBinding>
+        <KeyBinding Key="O" Modifiers="Alt" Command="{Binding LoadOriginalWallpaperCommand}"></KeyBinding>
+        <KeyBinding Key="L" Modifiers="Alt" Command="{Binding DownloadFromLinkCommand}"></KeyBinding>
+        <KeyBinding Key="Enter" Modifiers="Alt" Command="{Binding SetWallpaperCommand}"></KeyBinding>
+    </Window.InputBindings>
 
     <materialDesign:DialogHost Identifier="RootDialog">
         <Grid>
@@ -50,12 +66,13 @@
 
                     <StackPanel Margin="15" Grid.Row="0">
                         <!--Size-->
-                        <DockPanel>
+                        <DockPanel Margin="0 6 -8 0">
                             <TextBlock Text="Wallpaper size" FontSize="18" FontWeight="Regular" DockPanel.Dock="Left" VerticalAlignment="Center" />
                             <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignCentres" VerticalAlignment="Center" HorizontalAlignment="Right">
                                 <StackPanel>
                                     <Button Content="Double canvas size" Command="{Binding DoubleCanvasSizeCommand}"/>
-                                </StackPanel>
+                                    <Button Content="Set minimal scale (Ctrl + 0)" Command="{Binding SetMinimalScaleCommand}"/>
+                            </StackPanel>
                             </materialDesign:PopupBox>
                         </DockPanel>
                         <!--Custom-->
@@ -64,6 +81,7 @@
                                 <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}"
                                           IsChecked="{Binding UseCustomSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                           VerticalAlignment="Center"
+                                          IsEnabled="{Binding WallpaperViewModel.WallpaperModel.Path, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource PathToEnabledValueConverter}}"
                                           ToolTip="Use custom size" />
                                 <TextBlock Text="Use custom size"
                                        FontWeight="Light"
@@ -80,7 +98,7 @@
                                     Margin="0 0 0 0"
                                     Width="20"
                                     Height="20"
-                                    ToolTip="Set current screen size"
+                                    ToolTip="Set current screen size (Ctrl + S)"
                                     Command="{Binding SetCurrentScreenSizeCommand}">
                                     <materialDesign:PackIcon Kind="Airplay" />
                                 </Button>
@@ -90,7 +108,7 @@
                                     Margin="10 0 0 0"
                                     Width="20"
                                     Height="20"
-                                    ToolTip="Set default size"
+                                    ToolTip="Set default size (Ctrl + D)"
                                     Command="{Binding SetDefaultSizesCommand}">
                                     <materialDesign:PackIcon Kind="Autorenew" Height="14" Width="14" />
                                 </Button>
@@ -175,35 +193,39 @@
                                     <TextBlock Text="{Binding WallpaperViewModel.Width, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DoubleFloorValueConverter}, ConverterParameter=2}" FontSize="14" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
                                     <TextBlock Text=" x " FontSize="14" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
                                     <TextBlock Text="{Binding WallpaperViewModel.Height, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DoubleFloorValueConverter}, ConverterParameter=2}" FontSize="14" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
-                                    <TextBlock Text=" px" FontSize="14" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
-                                </StackPanel>
-
-                                <TextBlock Text="Scale (%)" FontSize="18" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
-                                <Slider Margin="0 6 0 0"
-                                        Minimum="5"
-                                        Maximum="125"
-                                        TickFrequency="5"
-                                        AutoToolTipPlacement="BottomRight"
-                                        AutoToolTipPrecision="2"
-                                        Value="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ScaleValueConverter}}"
-                                        />
-                        </StackPanel>
+                                    <TextBlock Text=" px " FontSize="14" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
+                                    <TextBlock Text="{Binding WallpaperViewModel.NewSizeInPercent, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" FontWeight="Regular" Margin="0 10 0 0"></TextBlock>
+                            </StackPanel>
+                                
+                            <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                                <TextBlock Text="Scale" FontSize="18" FontWeight="Regular"></TextBlock>
+                                <TextBlock Text=" (" FontSize="18" FontWeight="Regular" VerticalAlignment="Center"></TextBlock>
+                                <TextBlock Text="{Binding Scale, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ScaleValueConverter}}" VerticalAlignment="Center" FontSize="18" FontWeight="Regular"></TextBlock>
+                                <TextBlock Text=" %)" FontSize="18" FontWeight="Regular" VerticalAlignment="Center"></TextBlock>
+                            </StackPanel>
+                                
+                            <Slider Margin="0 6 0 0"
+                                    Minimum="5"
+                                    Maximum="125"
+                                    TickFrequency="5"
+                                    AutoToolTipPlacement="BottomRight"
+                                    AutoToolTipPrecision="2"
+                                    Value="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ScaleValueConverter}}"
+                                    />
+                            </StackPanel>
                         </Expander>
                     </StackPanel>
 
-                    <!--SetWall-->
-                    <StackPanel Grid.Row="2" Margin="15">
-                        <TextBlock Text="{Binding SetWallpaperTooltipError, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Crimson" FontWeight="Regular" FontSize="12"></TextBlock>
-                        <Button 
-                            Style="{StaticResource MaterialDesignRaisedButton}" 
-                             Content="Set as wallpaper"
-                            Command="{Binding SetWallpaperCommand}"
-                    >
-                        </Button>
-                    </StackPanel>
-
-
-                </Grid>
+                <!--SetWall-->
+                <StackPanel Grid.Row="2" Margin="15">
+                    <TextBlock Text="{Binding SetWallpaperTooltipError, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Crimson" FontWeight="Regular" FontSize="12"></TextBlock>
+                    <Button 
+                                    Style="{StaticResource MaterialDesignRaisedButton}" 
+                                     Content="Set as current wallpaper (Alt + Enter)"
+                                    Command="{Binding SetWallpaperCommand}"
+                                    />
+                </StackPanel>
+            </Grid>
 
                 <Grid Grid.Column="1">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" 
@@ -237,42 +259,44 @@
                         </Canvas>
                     </ScrollViewer>
 
+                    <!--Popup button for opening files-->
                     <materialDesign:PopupBox Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}" 
                                          Margin="40"
                                          HorizontalAlignment="Right" 
                                          VerticalAlignment="Bottom">
                         <StackPanel>
-                            <Button ToolTip="Load wallpaper from file"
+                            <Button ToolTip="Load wallpaper from file (Ctrl + O)"
                                 Command="{Binding LoadFromFileCommand}"
                                 Background="CornflowerBlue"
                                 Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
                                 <materialDesign:PackIcon Kind="FileImage" />
                             </Button>
 
-                            <Button ToolTip="Download from https://unsplash.com/"
+                        <Button ToolTip="Download from https://unsplash.com/ (Alt + U)"
                                 Command="{Binding DownloadFromUnsplashCommand}"
                                 Background="{DynamicResource PrimaryHueMidBrush}"
                                 Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
                                 <materialDesign:PackIcon Kind="Camera" />
                             </Button>
 
-                            <Button ToolTip="Download from https://alpha.wallhaven.cc/"
+                        <Button ToolTip="Download from https://alpha.wallhaven.cc/ (Alt + W)"
                                 Command="{Binding DownloadFromWallhavenCommand}"
                                 Background="{DynamicResource PrimaryHueDarkBrush}"
                                 Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
                                 <materialDesign:PackIcon Kind="FileWordBox" />
                             </Button>
 
-                            <Button ToolTip="Download from url"
+                        <Button ToolTip="Download from url (Alt + L)"
                                 Background="{DynamicResource SecondaryAccentBrush}"
                                 Command="{Binding DownloadFromLinkCommand}"
                                 Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
                                 <materialDesign:PackIcon Kind="Download" />
                             </Button>
 
-                            <Button ToolTip="Set original wallpaper"
+                        <Button ToolTip="Load original wallpaper (Alt + O)"
                                 Background="Coral"
-                                Foreground="{DynamicResource PrimaryHueMidForegroundBrush}">
+                                Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                                Command="{Binding LoadOriginalWallpaperCommand}">
                                 <materialDesign:PackIcon Kind="Refresh" />
                             </Button>
                         </StackPanel>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -71,15 +72,15 @@ namespace WallSetter_v2
 
         private void ScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            //if (e.ExtentWidth < ViewModel.CanvasWidth * ViewModel.Scale || e.ExtentHeight < ViewModel.CanvasHeight * ViewModel.Scale)
-            //{
-            //    return;
-            //}
-
             ViewModel.ViewportHeight = e.ViewportHeight;
             ViewModel.ViewportWidth = e.ViewportWidth;
             ViewModel.HorizontalScrollOffset = e.HorizontalOffset;
             ViewModel.VerticalScrollOffset = e.VerticalOffset;
+        }
+
+        private async void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            await Task.Run(() => ViewModel.GetDefaultWallpaperPath());
         }
     }
 }

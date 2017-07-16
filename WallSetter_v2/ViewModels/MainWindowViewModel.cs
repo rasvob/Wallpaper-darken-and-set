@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using WallpaperDownloader;
+using WallpaperManipulator;
 using WallSetter_v2.Annotations;
 using WallSetter_v2.Commands;
 using WallSetter_v2.Dialogs;
@@ -290,6 +291,7 @@ namespace WallSetter_v2.ViewModels
         private double _viewportHeight;
         private double _viewportWidth;
         private string _setWallpaperTooltipError = String.Empty;
+        private string _originalWallpaperPath;
 
         public ICommand SetWallpaperCommand { get; }
         public ICommand LoadFromFileCommand { get; }
@@ -299,10 +301,11 @@ namespace WallSetter_v2.ViewModels
         public ICommand SetDefaultSizesCommand { get; set; }
         public ICommand SetCurrentScreenSizeCommand { get; set; }
         public ICommand DoubleCanvasSizeCommand { get; set; }
+        public ICommand LoadOriginalWallpaperCommand { get; set; }
+        public ICommand SetMinimalScaleCommand { get; set; }
 
         public static readonly double MinScale = 0.05;
         public static readonly double MaxScale = 1.25;
-
 
         public WallpaperViewModel WallpaperViewModel
         {
@@ -346,6 +349,8 @@ namespace WallSetter_v2.ViewModels
             SetDefaultSizesCommand = new SimpleCommand(SetDefaultSizesCommandExecute, SetDefaultSizesCommandCanExecute);
             SetCurrentScreenSizeCommand = new SimpleCommand(SetCurrentScreenSizeCommandExecute, SetCurrentScreenSizeCommandCanExecute);
             DoubleCanvasSizeCommand = new SimpleCommand(DoubleCanvasSizeCommandExecute);
+            LoadOriginalWallpaperCommand = new SimpleCommand(LoadOriginalWallpaperExecute);
+            SetMinimalScaleCommand = new SimpleCommand(SetMinimalScaleCommandExecute);
 
             FillOpacityItemSource();
             RefreshHeightSource(int.MaxValue);
@@ -354,11 +359,28 @@ namespace WallSetter_v2.ViewModels
             WallpaperViewModel.IsVisible = Visibility.Hidden;
         }
 
+        private void SetMinimalScaleCommandExecute(object o)
+        {
+            Scale = MinScale;
+        }
+
+        private async void LoadOriginalWallpaperExecute(object o)
+        {
+            if (_originalWallpaperPath is null)
+            {
+                await DialogHelper.ShowMessage("Error occurred", "Original wallpaper is not available", RootDialogHost);
+                return;
+            }
+
+            LoadFile(_originalWallpaperPath);
+        }
+
         private void DoubleCanvasSizeCommandExecute(object o)
         {
             CanvasWidth *= 2;
             CanvasHeight *= 2;
             CenterCover();
+            CenterWallpaper();
         }
 
         private bool SetCurrentScreenSizeCommandCanExecute(object o)
@@ -396,7 +418,7 @@ namespace WallSetter_v2.ViewModels
 
         private async void DownloadFromLinkExecute(object o)
         {
-            await DownloadWithDialog("Download from unsplash.com", DownloaderType.Link);
+            await DownloadWithDialog("Download from URL", DownloaderType.Link);
         }
 
         private async void DownloadFromUnsplashExecute(object o)
@@ -480,9 +502,7 @@ namespace WallSetter_v2.ViewModels
 
             CanvasWidth = WallpaperViewModel.WallpaperModel.Width * 2;
             CanvasHeight = WallpaperViewModel.WallpaperModel.Height * 2;
-            WallpaperViewModel.TopCoordinate = (CanvasHeight - WallpaperViewModel.Height) / 2;
-            WallpaperViewModel.LeftCoordinate = (CanvasWidth - WallpaperViewModel.Width) / 2;
-            WallpaperViewModel.UpdateCoordinates();
+            CenterWallpaper();
             WallpaperViewModel.IsVisible = Visibility.Visible;
             Height = WallpaperViewModel.WallpaperModel.Height;
             Width = WallpaperViewModel.WallpaperModel.Width;
@@ -573,6 +593,11 @@ namespace WallSetter_v2.ViewModels
         {
             get
             {
+                if (WallpaperViewModel.WallpaperModel.Path is null)
+                {
+                    return string.Empty;
+                }
+
                 switch (columnName)
                 {
                     case nameof(Width):
@@ -608,6 +633,26 @@ namespace WallSetter_v2.ViewModels
         {
             Top = (CanvasHeight - Height) / 2;
             Left = (CanvasWidth - Width) / 2;
+        }
+
+        private void CenterWallpaper()
+        {
+            WallpaperViewModel.TopCoordinate = (CanvasHeight - WallpaperViewModel.Height) / 2;
+            WallpaperViewModel.LeftCoordinate = (CanvasWidth - WallpaperViewModel.Width) / 2;
+            WallpaperViewModel.UpdateCoordinates();
+        }
+
+        public void GetDefaultWallpaperPath()
+        {
+            try
+            {
+                OriginalWallpaperGetter originalWallpaperGetter = new OriginalWallpaperGetter();
+                _originalWallpaperPath = originalWallpaperGetter.GetOriginalWallpaper();
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
+            }
         }
     }
 }
