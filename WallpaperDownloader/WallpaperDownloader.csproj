@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractDownloader.cs" />
     <Compile Include="CommonDownloader.cs" />
     <Compile Include="DownloaderType.cs" />
     <Compile Include="IWallpaperDownloader.cs" />

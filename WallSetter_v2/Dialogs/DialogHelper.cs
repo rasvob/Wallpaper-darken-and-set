@@ -24,7 +24,6 @@ namespace WallSetter_v2.Dialogs
 
         public static Task ShowProgressDialog(string title, string message, Action longRunningTask, string host)
         {
-            //TODO: Test it
             ProgressDialog progressDialog = new ProgressDialog
             {
                 DataContext = new CommonDialogViewModel

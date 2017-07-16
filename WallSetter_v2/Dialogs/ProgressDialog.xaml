@@ -30,7 +30,9 @@
                          Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" />
 
             <TextBlock Text="{Binding Message, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
-                       Grid.Column="1" VerticalAlignment="Center" />
+                       Grid.Column="1" 
+                       VerticalAlignment="Center"
+                       Margin="6 0 0 0" />
         </Grid>
     </Grid>
 </UserControl>

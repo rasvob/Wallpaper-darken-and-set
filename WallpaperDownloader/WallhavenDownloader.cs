@@ -10,35 +10,23 @@ using System.Text.RegularExpressions;
 
 namespace WallpaperDownloader
 {
-    public class WallhavenDownloader: IWallpaperDownloader
+    public class WallhavenDownloader: AbstractDownloader
     {
-        public string Url { get; set; }
+        public WallhavenDownloader(string url) : base(url) {}
 
-        public static readonly string RegExString = @"https:\/\/alpha\.wallhaven\.cc\/wallpaper\/\d+";
-
-        public WallhavenDownloader(string url)
+        public override bool IsLinkValid()
         {
-            Url = url;
+            return new Regex(@"^https:\/\/alpha\.wallhaven\.cc\/wallpaper\/\d+$").IsMatch(Url);
         }
 
-        public bool IsLinkValid()
-        {
-            return new Regex(RegExString).IsMatch(Url);
-        }
-
-        public string DownloadWallpaper()
-        {
-            string url = GetImageUrl();
-            IWallpaperDownloader downloader = new CommonDownloader(url);
-            string wallpaper = downloader.DownloadWallpaper();
-            return wallpaper;
-        }
-
-        private string GetImageUrl()
+        public override string GetImageUrl()
         {
             var web = new HtmlWeb();
             var doc = web.Load(Url);
-            return "http:" + doc.DocumentNode.SelectSingleNode("//img[@id='wallpaper']").Attributes["src"].Value;
+            HtmlNode node = doc.DocumentNode.SelectSingleNode("//img[@id='wallpaper']");
+            HtmlAttribute attribute = node != null ? node.Attributes["src"] : throw new ApplicationException("Unable to obtain image url, please use a direct link instead");
+            string imageUrl = "http:" + attribute.Value;
+            return imageUrl;
         }
     }
 }

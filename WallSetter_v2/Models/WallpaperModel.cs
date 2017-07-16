@@ -63,14 +63,20 @@ namespace WallSetter_v2.Models
                 throw new ApplicationException("Path can't be null");
             }
             BitmapImage img = new BitmapImage(new Uri(Path, UriKind.Absolute));
-            Width = (int)img.Width;
-            Height = (int)img.Height;
+            Width = img.PixelWidth;
+            Height = img.PixelHeight;
             return new Size(Width, Height);
         }
 
         public void DownloadWallpaper(DownloaderType type, string url)
         {
             IWallpaperDownloader downloader = WallpaperDownloaderFactory.CreateDownloaderInstance(type, url);
+
+            if (!downloader.IsLinkValid())
+            {
+                throw new ApplicationException("Link is invalid");
+            }
+
             string wallpaper = downloader.DownloadWallpaper();
             Path = wallpaper;
         }

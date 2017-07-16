@@ -1,24 +1,23 @@
 ﻿using System.IO;
+using System.Text.RegularExpressions;
 
 namespace WallpaperDownloader
 {
-    public class UnsplashDownloader: IWallpaperDownloader
+    public class UnsplashDownloader: AbstractDownloader
     {
-        public string Url { get; set; }
+        public UnsplashDownloader(string url) : base(url) {}
 
-        public UnsplashDownloader(string url)
+        public override bool IsLinkValid()
         {
-            Url = url;
+            var rx = new Regex(@"https:\/\/unsplash\.com\/\?photo=\w+");
+            return rx.IsMatch(Url);
         }
 
-        public bool IsLinkValid()
+        public override string GetImageUrl()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public string DownloadWallpaper()
-        {
-            throw new System.NotImplementedException();
+            var rgx = new Regex(@"https:\/\/unsplash\.com\/\?photo=(<id>)");
+            rgx.Matches(Url);
+            return null;
         }
     }
 }

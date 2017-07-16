@@ -24,6 +24,7 @@ namespace WallSetter_v2.ViewModels
 {
     public class MainWindowViewModel: INotifyPropertyChanged, IDataErrorInfo
     {
+        private readonly string RootDialogHost = "RootDialog";
         private readonly IOpenFileService _openFileService;
 
         public double HorizontalScrollOffset
@@ -397,7 +398,6 @@ namespace WallSetter_v2.ViewModels
         private async void DownloadFromWallhavenExecute(object o)
         {
             await DownloadWithDialog("Download from Wallhaven.cc", DownloaderType.Wallhaven);
-            Debug.WriteLine(WallpaperViewModel.WallpaperModel.Path);
         }
 
         private async Task DownloadWithDialog(string title, DownloaderType downloaderType)
@@ -412,7 +412,7 @@ namespace WallSetter_v2.ViewModels
                 DataContext = dialogViewModel
             };
 
-            var res = await DialogHost.Show(dialog, "RootDialog");
+            var res = await DialogHost.Show(dialog, RootDialogHost);
 
             if ((bool)res)
             {
@@ -420,23 +420,29 @@ namespace WallSetter_v2.ViewModels
                 await Task.Factory.StartNew(
                     () =>
                     {
+                        
+                    });
+
+                await DialogHelper.ShowProgressDialog("Please wait", "Download in progress...",
+                    () =>
+                    {
                         try
                         {
-                            WallpaperViewModel.WallpaperModel.DownloadWallpaper(downloaderType,
-                                dialogViewModel.Link);
-
-                            //TODO: Progress
+                            WallpaperViewModel.WallpaperModel.DownloadWallpaper(downloaderType, dialogViewModel.Link);
                         }
                         catch (Exception e)
                         {
                             err = e.Message;
                         }
-                    });
+                    }, RootDialogHost);
 
                 if (err != null)
                 {
-                    await DialogHelper.ShowMessage("Error occurred", err, "RootDialog");
+                    await DialogHelper.ShowMessage("Error occurred", err, RootDialogHost);
+                    return;
                 }
+
+                LoadFile(WallpaperViewModel.WallpaperModel.Path);
             }
         }
 

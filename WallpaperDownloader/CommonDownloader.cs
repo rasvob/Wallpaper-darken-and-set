@@ -1,25 +1,29 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Net;
 
 namespace WallpaperDownloader
 {
-    public class CommonDownloader: IWallpaperDownloader
+    public class CommonDownloader: AbstractDownloader
     {
-        public string Url { get; set; }
-
-        public CommonDownloader(string url)
+        public CommonDownloader(string url) : base(url)
         {
-            Url = url;
         }
 
-        public bool IsLinkValid()
+        public override bool IsLinkValid()
         {
             return true;
         }
 
-        public string DownloadWallpaper()
+        public override string GetImageUrl()
+        {
+            return Url;
+        }
+
+        public new string DownloadWallpaper()
         {
             return DownloadWallpaper(Url);
         }
@@ -29,8 +33,7 @@ namespace WallpaperDownloader
             string fileName;
             using (WebClient wc = new WebClient())
             {
-                byte[] data = wc.DownloadData(url);
-
+                byte[] data = wc.DownloadData(new Uri(url));
                 using (MemoryStream memoryStream = new MemoryStream(data))
                 {
                     using (var img = Image.FromStream(memoryStream))
