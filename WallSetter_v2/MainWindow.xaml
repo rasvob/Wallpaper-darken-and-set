@@ -38,6 +38,7 @@
     
     <!--Key binding-->
     <Window.InputBindings>
+        <!--TODO: Add KeyBinding for changing opacity--> 
         <KeyBinding Key="NumPad0" Modifiers="Control" Command="{Binding SetMinimalScaleCommand}"></KeyBinding>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SetCurrentScreenSizeCommand}"></KeyBinding>
         <KeyBinding Key="D" Modifiers="Control" Command="{Binding SetDefaultSizesCommand}"></KeyBinding>

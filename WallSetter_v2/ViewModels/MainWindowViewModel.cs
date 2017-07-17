@@ -349,6 +349,9 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
+        //TODO: Add clipboard text to input in dialogs
+        //TODO: Center image when fit to monitor setup
+        //TODO: Keybind to move image up and down
         public MainWindowViewModel(IOpenFileService openFileService)
         {
             _openFileService = openFileService;
