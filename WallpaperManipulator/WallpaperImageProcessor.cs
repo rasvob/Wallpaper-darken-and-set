@@ -13,10 +13,10 @@ namespace WallpaperManipulator
     public class WallpaperImageProcessor: IDisposable
     {
         public MemoryStream Stream { get; set; } = new MemoryStream();
-        public void ProcessImage(MemoryStream inputImage, Size oldSize, Size newSize, Rectangle cropArea, int coverOpacity = 0)
+        public void ProcessImage(MemoryStream inputImage, Size newSize, Rectangle cropArea, int coverOpacity = 0)
         {
-            Bitmap overlay = CreateBlackOverlay(newSize.Width, newSize.Width);
-            ImageLayer imageLayer = new ImageLayer()
+            Bitmap overlay = CreateBlackOverlay(cropArea.Width, cropArea.Height);
+            ImageLayer imageLayer = new ImageLayer
             {
                 Image = overlay,
                 Opacity = coverOpacity,
@@ -25,8 +25,6 @@ namespace WallpaperManipulator
 
             using (ImageFactory imageFactory = new ImageFactory())
             {
-                MemoryStream res = new MemoryStream();
-
                 imageFactory.Load(inputImage)
                     .Resize(newSize)
                     .Crop(cropArea)
@@ -55,15 +53,13 @@ namespace WallpaperManipulator
 
         private Bitmap CreateBlackOverlay(int width, int height)
         {
-            Bitmap res = new Bitmap(width, height);
-            Parallel.For(0, width * height, i =>
+            Bitmap img = new Bitmap(width, height);
+            using (Graphics graph = Graphics.FromImage(img))
             {
-                lock (res)
-                {
-                    res.SetPixel(i%width, i/height, Color.Black);
-                }
-            });
-            return res;
+                Rectangle imageSize = new Rectangle(0, 0, width, height);
+                graph.FillRectangle(Brushes.Black, imageSize);
+            }
+            return img;
         }
 
         public void Dispose()

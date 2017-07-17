@@ -341,8 +341,10 @@ namespace WallSetter_v2.ViewModels
             get
             {
                 Rectangle overlayArea = new Rectangle((int)Left, (int)Top, Width, Height);
-                Rectangle imageAre = new Rectangle((int) WallpaperViewModel.LeftCoordinate, (int) WallpaperViewModel.TopCoordinate, (int) WallpaperViewModel.Width, (int) WallpaperViewModel.Height);
-                Rectangle intersect = Rectangle.Intersect(imageAre, overlayArea);
+                Rectangle imageArea = new Rectangle((int) WallpaperViewModel.LeftCoordinate, (int) WallpaperViewModel.TopCoordinate, (int) WallpaperViewModel.Width, (int) WallpaperViewModel.Height);
+                Rectangle intersect = Rectangle.Intersect(imageArea, overlayArea);
+                intersect.X = overlayArea.Left - imageArea.Left;
+                intersect.Y = overlayArea.Top - imageArea.Top;
                 return intersect;
             }
         }
@@ -368,6 +370,7 @@ namespace WallSetter_v2.ViewModels
             RefreshWidthSource(int.MaxValue);
 
             WallpaperViewModel.IsVisible = Visibility.Hidden;
+            SelectedStyle = WallpaperStyleItemSource.FirstOrDefault();
         }
 
         private void SetMinimalScaleCommandExecute(object o)
@@ -515,19 +518,31 @@ namespace WallSetter_v2.ViewModels
             CanvasWidth = WallpaperViewModel.WallpaperModel.Width * 2;
             CanvasHeight = WallpaperViewModel.WallpaperModel.Height * 2;
             CenterWallpaper();
+            CenterCover();
             WallpaperViewModel.IsVisible = Visibility.Visible;
             Height = WallpaperViewModel.WallpaperModel.Height;
             Width = WallpaperViewModel.WallpaperModel.Width;
             OnWallpaperLoaded();
         }
 
-        private void SetWallpaperExecute(object _)
+        private async void SetWallpaperExecute(object _)
         {
-            using (var processor = new WallpaperImageProcessor())
-            {
-                processor.ProcessImage(WallpaperViewModel.WallpaperModel.Stream, WallpaperViewModel.WallpaperModel.OriginalSize, WallpaperViewModel.NewSize, CropArea);
-                string tempFileName = processor.SaveFileToTemp();
-            }
+            await DialogHelper.ShowProgressDialog("Set as current wallpaper", "Please wait, image processing in progress...",
+                () =>
+                {
+                    using (var processor = new WallpaperImageProcessor())
+                    {
+                        processor.ProcessImage(WallpaperViewModel.WallpaperModel.Stream, WallpaperViewModel.NewSize, CropArea, (int)(Opacity * 100));
+                        var tempFileName = processor.SaveFileToTemp();
+
+                        WallSetter wallSetter = new WallSetter(tempFileName, WallpaperStyle);
+                        wallSetter.SetImageAsWallpaper();
+                        MessageQueue.Enqueue("Wallpaper has been set successfully", "Load original wallpaper", () =>
+                        {
+                            LoadOriginalWallpaperCommand.Execute(null);
+                        });
+                    }
+                }, RootDialogHost);
         }
 
         private bool SetWallpaperCanExecute(object _)

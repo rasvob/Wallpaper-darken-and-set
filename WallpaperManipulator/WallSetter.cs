@@ -1,16 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
-using ImageProcessor;
-using ImageProcessor.Imaging;
-using ImageProcessor.Imaging.Formats;
 using Microsoft.Win32;
 
 namespace WallpaperManipulator
 {
-    class WallSetter
+    public class WallSetter
     {
 		const int SpiSetdeskwallpaper = 20;
 		const int SpifUpdateinifile = 0x01;
@@ -18,36 +12,26 @@ namespace WallpaperManipulator
 
 		public string PathToWallpaper { get; set; }
 		public Style StyleOfWallpaper { get; set; }
-		private const string ProcessedImageName = "output.png";
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 
-		public WallSetter(string pathToWallpaper)
+		public WallSetter(string pathToWallpaper, Style style)
 		{
             PathToWallpaper = pathToWallpaper;
-        }
-
-	    public void SetOriginalWallpaper()
-	    {
+		    StyleOfWallpaper = style;
+		}
+		
+		public void SetImageAsWallpaper()
+		{
 			RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
-	        SetRegistryStyleByStyle(key, StyleOfWallpaper);
-            key.Close();
+		    SetRegistryStyleByStyle(key);
+			key?.Close();
 			FileInfo fi = new FileInfo(PathToWallpaper);
 			SystemParametersInfo(SpiSetdeskwallpaper, 0, fi.FullName, SpifUpdateinifile | SpifSendwininichange);
 		}
-		
-		private void SetDesktopWallpaperFromProcessed()
-		{
-			RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
-		    SetRegistryStyleByStyle(key, StyleOfWallpaper);
-			key.Close();
 
-			FileInfo fi = new FileInfo(ProcessedImageName);
-			SystemParametersInfo(SpiSetdeskwallpaper, 0, fi.FullName, SpifUpdateinifile | SpifSendwininichange);
-		}
-
-        private void SetRegistryStyleByStyle(RegistryKey key, Style style)
+        private void SetRegistryStyleByStyle(RegistryKey key)
         {
             if (StyleOfWallpaper == Style.Stretched)
             {
@@ -66,17 +50,6 @@ namespace WallpaperManipulator
                 key.SetValue(@"WallpaperStyle", 1.ToString());
                 key.SetValue(@"TileWallpaper", 1.ToString());
             }
-        }
-
-		public string RetrieveCurrentWallPath()
-		{
-			RegistryKey rk = Registry.CurrentUser.OpenSubKey("Control Panel\\Desktop", false);
-			return rk.GetValue("WallPaper").ToString();
-		}
-
-        public void SetDesktopWallpaper(int opacity)
-        {
-            
         }
     }
 }
