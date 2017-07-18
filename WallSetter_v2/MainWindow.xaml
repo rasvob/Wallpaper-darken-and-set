@@ -17,7 +17,7 @@
         Icon="Resources/favicon-photo.ico"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
         Loaded="MainWindow_OnLoaded"
-        Title="Wallpaper setter" Height="800" Width="1100">
+        Title="OneWallpaper" Height="800" Width="1100">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
