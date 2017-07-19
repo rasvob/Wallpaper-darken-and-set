@@ -38,7 +38,7 @@
     
     <!--Key binding-->
     <Window.InputBindings>
-        <!--TODO: Add KeyBinding for changing opacity--> 
+        
         <KeyBinding Key="NumPad0" Modifiers="Control" Command="{Binding SetMinimalScaleCommand}"></KeyBinding>
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SetCurrentScreenSizeCommand}"></KeyBinding>
         <KeyBinding Key="D" Modifiers="Control" Command="{Binding SetDefaultSizesCommand}"></KeyBinding>
@@ -49,6 +49,12 @@
         <KeyBinding Key="O" Modifiers="Alt" Command="{Binding LoadOriginalWallpaperCommand}"></KeyBinding>
         <KeyBinding Key="L" Modifiers="Alt" Command="{Binding DownloadFromLinkCommand}"></KeyBinding>
         <KeyBinding Key="Enter" Modifiers="Alt" Command="{Binding SetWallpaperCommand}"></KeyBinding>
+
+        <KeyBinding Key="Add" Modifiers="Control" Command="{Binding DarkenMoreCommand}"></KeyBinding>
+        <KeyBinding Key="Subtract" Modifiers="Control" Command="{Binding DarkenLessCommand}"></KeyBinding>
+
+        <KeyBinding Key="Add" Modifiers="Alt" Command="{Binding MoveUpCommand}"></KeyBinding>
+        <KeyBinding Key="Subtract" Modifiers="Alt" Command="{Binding MoveDownCommand}"></KeyBinding>
     </Window.InputBindings>
 
     <materialDesign:DialogHost Identifier="RootDialog">
@@ -72,7 +78,8 @@
                             <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignCentres" VerticalAlignment="Center" HorizontalAlignment="Right">
                                 <StackPanel>
                                     <Button Content="Double canvas size" Command="{Binding DoubleCanvasSizeCommand}"/>
-                                    <Button Content="Set minimal scale (Ctrl + 0)" Command="{Binding SetMinimalScaleCommand}"/>
+                                <Button Content="Set minimal scale (Ctrl + 0)" Command="{Binding SetMinimalScaleCommand}"/>
+                                <Button Content="About" Command="{Binding AboutCommand}"/>
                             </StackPanel>
                             </materialDesign:PopupBox>
                         </DockPanel>
@@ -171,6 +178,7 @@
                             <ComboBox materialDesign:HintAssist.Hint="Darken by" 
                                   Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
                                   ItemsSource="{Binding OpacityItemSource}"
+                                  SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   >
                                 <ComboBox.Text>
                                     <Binding Path="Opacity" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" Converter="{StaticResource OpacityValueConverter}"></Binding>

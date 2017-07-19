@@ -16,7 +16,8 @@ namespace WallpaperDownloader
 
         public override bool IsLinkValid()
         {
-            return new Regex(@"^https:\/\/alpha\.wallhaven\.cc\/wallpaper\/\d+$").IsMatch(Url);
+            var regex = new Regex(@"^https:\/\/alpha\.wallhaven\.cc\/wallpaper\/\d+$");
+            return regex.IsMatch(Url);
         }
 
         public override string GetImageUrl()

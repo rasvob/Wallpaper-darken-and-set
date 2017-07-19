@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -27,6 +28,7 @@ namespace WallSetter_v2.ViewModels
     {
         private readonly string RootDialogHost = "RootDialog";
         private readonly IOpenFileService _openFileService;
+        private readonly double _horizontalMovementOffset = 20;
 
         public double HorizontalScrollOffset
         {
@@ -267,6 +269,17 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
+        public int SelectedIndex
+        {
+            get => _selectedIndex;
+            set
+            {
+                if (value == _selectedIndex) return;
+                _selectedIndex = value;
+                OnPropertyChanged();
+            }
+        }
+
         private bool _useCustomSize;
         private int _height;
         private int _width;
@@ -292,17 +305,23 @@ namespace WallSetter_v2.ViewModels
         private double _viewportWidth;
         private string _setWallpaperTooltipError = String.Empty;
         private string _originalWallpaperPath;
+        private int _selectedIndex = 0;
 
         public ICommand SetWallpaperCommand { get; }
         public ICommand LoadFromFileCommand { get; }
         public ICommand DownloadFromWallhavenCommand { get; }
         public ICommand DownloadFromUnsplashCommand { get; }
         public ICommand DownloadFromLinkCommand { get; }
-        public ICommand SetDefaultSizesCommand { get; set; }
-        public ICommand SetCurrentScreenSizeCommand { get; set; }
-        public ICommand DoubleCanvasSizeCommand { get; set; }
-        public ICommand LoadOriginalWallpaperCommand { get; set; }
-        public ICommand SetMinimalScaleCommand { get; set; }
+        public ICommand SetDefaultSizesCommand { get; }
+        public ICommand SetCurrentScreenSizeCommand { get; }
+        public ICommand DoubleCanvasSizeCommand { get; }
+        public ICommand LoadOriginalWallpaperCommand { get; }
+        public ICommand SetMinimalScaleCommand { get; }
+        public ICommand DarkenMoreCommand { get; }
+        public ICommand DarkenLessCommand { get; }
+        public ICommand MoveUpCommand { get; }
+        public ICommand MoveDownCommand { get; }
+        public ICommand AboutCommand { get; }
 
         public static readonly double MinScale = 0.05;
         public static readonly double MaxScale = 1.25;
@@ -349,9 +368,6 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
-        //TODO: Add clipboard text to input in dialogs
-        //TODO: Center image when fit to monitor setup
-        //TODO: Keybind to move image up and down
         public MainWindowViewModel(IOpenFileService openFileService)
         {
             _openFileService = openFileService;
@@ -367,6 +383,11 @@ namespace WallSetter_v2.ViewModels
             DoubleCanvasSizeCommand = new SimpleCommand(DoubleCanvasSizeCommandExecute);
             LoadOriginalWallpaperCommand = new SimpleCommand(LoadOriginalWallpaperExecute);
             SetMinimalScaleCommand = new SimpleCommand(SetMinimalScaleCommandExecute);
+            DarkenMoreCommand = new SimpleCommand(DarkenMoreCommandExecute);
+            DarkenLessCommand = new SimpleCommand(DarkenLessCommandExecute);
+            MoveUpCommand = new SimpleCommand(MoveUpCommandExecute);
+            MoveDownCommand = new SimpleCommand(MoveDownCommandExecute);
+            AboutCommand = new SimpleCommand(AboutCommandExecute);
 
             FillOpacityItemSource();
             RefreshHeightSource(int.MaxValue);
@@ -374,6 +395,55 @@ namespace WallSetter_v2.ViewModels
 
             WallpaperViewModel.IsVisible = Visibility.Hidden;
             SelectedStyle = WallpaperStyleItemSource.FirstOrDefault();
+        }
+
+        private async void AboutCommandExecute(object o)
+        {
+            await DialogHost.Show(new AboutDialog(), RootDialogHost);
+        }
+
+        private void MoveDownCommandExecute(object o)
+        {
+            if (WallpaperViewModel.TopCoordinate + WallpaperViewModel.Height + _horizontalMovementOffset <= CanvasHeight)
+            {
+                WallpaperViewModel.TopCoordinate += _horizontalMovementOffset;
+                WallpaperViewModel.UpdateCoordinates();
+            }
+            else
+            {
+                WallpaperViewModel.TopCoordinate = CanvasHeight - WallpaperViewModel.Height;
+                WallpaperViewModel.UpdateCoordinates();
+            }
+        }
+
+        private void MoveUpCommandExecute(object o)
+        {
+            if (WallpaperViewModel.TopCoordinate - _horizontalMovementOffset >= 0)
+            {
+                WallpaperViewModel.TopCoordinate -= _horizontalMovementOffset;
+                WallpaperViewModel.UpdateCoordinates();
+            }
+            else
+            {
+                WallpaperViewModel.TopCoordinate = 0;
+                WallpaperViewModel.UpdateCoordinates();
+            }
+        }
+
+        private void DarkenLessCommandExecute(object o)
+        {
+            if (SelectedIndex > 0)
+            {
+                SelectedIndex--;
+            }
+        }
+
+        private void DarkenMoreCommandExecute(object o)
+        {
+            if (SelectedIndex < OpacityItemSource.Count)
+            {
+                SelectedIndex++;
+            }
         }
 
         private void SetMinimalScaleCommandExecute(object o)
@@ -420,6 +490,9 @@ namespace WallSetter_v2.ViewModels
             UseCustomSize = true;
             Width = (int) SystemParameters.VirtualScreenWidth;
             Height = (int) SystemParameters.VirtualScreenHeight;
+            WallpaperViewModel.Width = Width;
+            WallpaperViewModel.Height = Width / WallpaperViewModel.WallpaperModel.Ratio;
+            CenterWallpaper();
         }
 
         private bool SetDefaultSizesCommandCanExecute(object o)
@@ -452,7 +525,8 @@ namespace WallSetter_v2.ViewModels
         {
             DownloadDialogViewModel dialogViewModel = new DownloadDialogViewModel()
             {
-                DialogTitle = title
+                DialogTitle = title,
+                Link = GetDownloadLinkFromClipboard(downloaderType)
             };
 
             var dialog = new DownloadDialog()
@@ -465,12 +539,6 @@ namespace WallSetter_v2.ViewModels
             if ((bool)res)
             {
                 string err = null;
-                await Task.Factory.StartNew(
-                    () =>
-                    {
-                        
-                    });
-
                 await DialogHelper.ShowProgressDialog("Please wait", "Download in progress...",
                     () =>
                     {
@@ -493,6 +561,19 @@ namespace WallSetter_v2.ViewModels
                 LoadFile(WallpaperViewModel.WallpaperModel.Path);
                 MessageQueue.Enqueue($"{dialogViewModel.Link} loaded", "Hide", () => { });
             }
+        }
+
+        private string GetDownloadLinkFromClipboard(DownloaderType downloaderType)
+        {
+            var clipboard = Clipboard.GetText();
+            var downloaders = new Dictionary<DownloaderType, IWallpaperDownloader>
+            {
+                { DownloaderType.Wallhaven, new WallhavenDownloader(clipboard) },
+                { DownloaderType.Unsplash, new UnsplashDownloader(clipboard) },
+                { DownloaderType.Link, new CommonDownloader(clipboard) }
+            };
+
+            return downloaders[downloaderType].IsLinkValid() ? clipboard : string.Empty;
         }
 
         private void LoadFromFileExecute(object _)

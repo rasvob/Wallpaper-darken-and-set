@@ -8,11 +8,12 @@ namespace WallpaperDownloader
     {
         public UnsplashDownloader(string url) : base(url) {}
 
+        private readonly Regex _rx = new Regex(@"^https:\/\/unsplash\.com\/\?photo=(\w+)$");
+        private readonly Regex _rxAlt = new Regex(@"^https:\/\/unsplash\.com\/photos\/(\w+)$");
+
         public override bool IsLinkValid()
         {
-            var rx = new Regex(@"^https:\/\/unsplash\.com\/\?photo=(\w+)$");
-            var rxAlt = new Regex(@"^https:\/\/unsplash\.com\/photos\/(\w+)$");
-            return rx.IsMatch(Url) || rxAlt.IsMatch(Url);
+            return _rx.IsMatch(Url) || _rxAlt.IsMatch(Url);
         }
 
         public override string GetImageUrl()
