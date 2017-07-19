@@ -48,7 +48,7 @@
                 </Button>
             </Grid>
         </Border>
-        
+
         <Button IsCancel="True" Style="{DynamicResource MaterialDesignFlatButton}"
                 Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                 Content="Close"
