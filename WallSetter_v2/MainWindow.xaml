@@ -38,12 +38,12 @@
     
     <!--Key binding-->
     <Window.InputBindings>
-        
         <KeyBinding Key="NumPad0" Modifiers="Control" Command="{Binding SetMinimalScaleCommand}"></KeyBinding>
-        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SetCurrentScreenSizeCommand}"></KeyBinding>
-        <KeyBinding Key="D" Modifiers="Control" Command="{Binding SetDefaultSizesCommand}"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Alt" Command="{Binding SetCurrentScreenSizeCommand}"></KeyBinding>
+        <KeyBinding Key="D" Modifiers="Alt" Command="{Binding SetDefaultSizesCommand}"></KeyBinding>
 
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding LoadFromFileCommand}"></KeyBinding>
+        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveToFileCommand}"></KeyBinding>
         <KeyBinding Key="W" Modifiers="Alt" Command="{Binding DownloadFromWallhavenCommand}"></KeyBinding>
         <KeyBinding Key="U" Modifiers="Alt" Command="{Binding DownloadFromUnsplashCommand}"></KeyBinding>
         <KeyBinding Key="O" Modifiers="Alt" Command="{Binding LoadOriginalWallpaperCommand}"></KeyBinding>
@@ -79,6 +79,7 @@
                                 <StackPanel>
                                     <Button Content="Double canvas size" Command="{Binding DoubleCanvasSizeCommand}"/>
                                 <Button Content="Set minimal scale (Ctrl + 0)" Command="{Binding SetMinimalScaleCommand}"/>
+                                <Button Content="Save file (Ctrl + S)" Command="{Binding SaveToFileCommand}"/>
                                 <Button Content="About" Command="{Binding AboutCommand}"/>
                             </StackPanel>
                             </materialDesign:PopupBox>
@@ -106,7 +107,7 @@
                                     Margin="0 0 0 0"
                                     Width="20"
                                     Height="20"
-                                    ToolTip="Set current screen size (Ctrl + S)"
+                                    ToolTip="Set current screen size (Alt + S)"
                                     Command="{Binding SetCurrentScreenSizeCommand}">
                                     <materialDesign:PackIcon Kind="Airplay" />
                                 </Button>
@@ -116,7 +117,7 @@
                                     Margin="10 0 0 0"
                                     Width="20"
                                     Height="20"
-                                    ToolTip="Set default size (Ctrl + D)"
+                                    ToolTip="Set default size (Alt + D)"
                                     Command="{Binding SetDefaultSizesCommand}">
                                     <materialDesign:PackIcon Kind="Autorenew" Height="14" Width="14" />
                                 </Button>

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -28,6 +29,7 @@ namespace WallSetter_v2.ViewModels
     {
         private readonly string RootDialogHost = "RootDialog";
         private readonly IOpenFileService _openFileService;
+        private readonly ISaveFileService _saveFileService;
         private readonly double _horizontalMovementOffset = 20;
 
         public double HorizontalScrollOffset
@@ -309,6 +311,7 @@ namespace WallSetter_v2.ViewModels
 
         public ICommand SetWallpaperCommand { get; }
         public ICommand LoadFromFileCommand { get; }
+        public ICommand SaveToFileCommand { get; }
         public ICommand DownloadFromWallhavenCommand { get; }
         public ICommand DownloadFromUnsplashCommand { get; }
         public ICommand DownloadFromLinkCommand { get; }
@@ -368,9 +371,10 @@ namespace WallSetter_v2.ViewModels
             }
         }
 
-        public MainWindowViewModel(IOpenFileService openFileService)
+        public MainWindowViewModel(IOpenFileService openFileService, ISaveFileService saveFileService)
         {
             _openFileService = openFileService;
+            _saveFileService = saveFileService;
 
             MessageQueue = new SnackbarMessageQueue(TimeSpan.FromSeconds(2));
             SetWallpaperCommand = new SimpleCommand(SetWallpaperExecute, SetWallpaperCanExecute);
@@ -388,6 +392,7 @@ namespace WallSetter_v2.ViewModels
             MoveUpCommand = new SimpleCommand(MoveUpCommandExecute);
             MoveDownCommand = new SimpleCommand(MoveDownCommandExecute);
             AboutCommand = new SimpleCommand(AboutCommandExecute);
+            SaveToFileCommand = new SimpleCommand(SaveToFileCommandExecute, SetWallpaperCanExecute);
 
             FillOpacityItemSource();
             RefreshHeightSource(int.MaxValue);
@@ -395,6 +400,31 @@ namespace WallSetter_v2.ViewModels
 
             WallpaperViewModel.IsVisible = Visibility.Hidden;
             SelectedStyle = WallpaperStyleItemSource.FirstOrDefault();
+        }
+
+        private void SaveToFileCommandExecute(object o)
+        {
+            var file = _saveFileService.SaveFile();
+            if (file == null) return;
+            SaveFile(file);
+            MessageQueue.Enqueue($"{file} saved", "Hide", () => { });
+        }
+
+        private async void SaveFile(string file)
+        {
+            await DialogHelper.ShowProgressDialog("Save wallpaper", "Please wait, image processing in progress...",
+                () =>
+                {
+                    using (var processor = new WallpaperImageProcessor())
+                    {
+                        processor.ProcessImage(WallpaperViewModel.WallpaperModel.Stream, WallpaperViewModel.NewSize, CropArea, (int)(Opacity * 100));
+                        processor.SaveFile(file, ImageFormat.Png);
+                        MessageQueue.Enqueue("Wallpaper has been saved successfully", "Open in image viewer", () =>
+                        {
+                            Process.Start(file);
+                        });
+                    }
+                }, RootDialogHost);
         }
 
         private async void AboutCommandExecute(object o)

@@ -115,6 +115,8 @@
     <Compile Include="Dialogs\ProgressDialog.xaml.cs">
       <DependentUpon>ProgressDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\ISaveFileService.cs" />
+    <Compile Include="Services\SaveFileFromDialog.cs" />
     <Compile Include="Validation\NotEmptyValidationRule.cs" />
     <Compile Include="ValueConverters\PathToEnabledValueConverter.cs" />
     <Compile Include="ViewModels\CommonDialogViewModel.cs" />

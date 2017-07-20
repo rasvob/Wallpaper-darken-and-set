@@ -18,7 +18,7 @@ namespace WallSetter_v2
         public MainWindow()
         {
             InitializeComponent();
-            ViewModel = new MainWindowViewModel(new OpenFileFromDialog());
+            ViewModel = new MainWindowViewModel(new OpenFileFromDialog(), new SaveFileFromDialog());
             ViewModel.ScaleChanged += ViewModelOnScaleChanged;
             WallpaperControl.ViewModel = ViewModel.WallpaperViewModel;
             DataContext = ViewModel;
