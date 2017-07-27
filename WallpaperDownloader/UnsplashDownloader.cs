@@ -8,8 +8,8 @@ namespace WallpaperDownloader
     {
         public UnsplashDownloader(string url) : base(url) {}
 
-        private readonly Regex _rx = new Regex(@"^https:\/\/unsplash\.com\/\?photo=(\w+)$");
-        private readonly Regex _rxAlt = new Regex(@"^https:\/\/unsplash\.com\/photos\/(\w+)$");
+        private readonly Regex _rx = new Regex(@"^https:\/\/unsplash\.com\/.*\?photo=(.+)$");
+        private readonly Regex _rxAlt = new Regex(@"^https:\/\/unsplash\.com\/photos\/(.+)$");
 
         public override bool IsLinkValid()
         {
@@ -18,8 +18,8 @@ namespace WallpaperDownloader
 
         public override string GetImageUrl()
         {
-            var rgx = new Regex(@"(^https:\/\/unsplash\.com\/\?photo=)(?<id>\w+)$");
-            var rxAlt = new Regex(@"^https:\/\/unsplash\.com\/photos\/(?<id>\w+)$");
+            var rgx = new Regex(@"(^https:\/\/unsplash\.com\/.*\?photo=)(?<id>.+)$");
+            var rxAlt = new Regex(@"^https:\/\/unsplash\.com\/photos\/(?<id>.+)$");
             Match match = rgx.Match(Url);
 
             if (!match.Success)
