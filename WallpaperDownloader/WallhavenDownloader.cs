@@ -16,7 +16,7 @@ namespace WallpaperDownloader
 
         public override bool IsLinkValid()
         {
-            var regex = new Regex(@"^https:\/\/alpha\.wallhaven\.cc\/wallpaper\/\d+$");
+            var regex = new Regex(@"^https:\/\/wallhaven\.cc\/w\/\w+$");
             return regex.IsMatch(Url);
         }
 
@@ -26,7 +26,7 @@ namespace WallpaperDownloader
             var doc = web.Load(Url);
             HtmlNode node = doc.DocumentNode.SelectSingleNode("//img[@id='wallpaper']");
             HtmlAttribute attribute = node != null ? node.Attributes["src"] : throw new ApplicationException(UnableToObtainLinkError);
-            string imageUrl = "http:" + attribute.Value;
+            string imageUrl = attribute.Value;
             return imageUrl;
         }
     }
